@@ -1,0 +1,28 @@
+@use "_var" as *;
+@use "_mixin" as *;
+
+:root {
+    --border-base: 4px;
+
+    @include mq {
+        --border-base: 3px;
+    }
+}
+
+*, *::before, ::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 48px;
+
+    @include mq {
+        font-size: 36px;
+    }
+}
+
+body {
+    font-family: "Google Sans Code", monospace;
+    margin: 0;
+    background-color: $dark;
+}
