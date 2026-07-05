@@ -4,6 +4,7 @@ import ClockScale from '@/components/scale/ClockScale.vue'
 import AppHands from '@/components/hands/AppHands.vue'
 import ClockIndex from '@/components/index/ClockIndex.vue'
 import CloneIndex from '@/components/index/CloneIndex.vue'
+import NoiseSmall from '@/components/effect/NoiseSmall.vue'
 import { useClockSizeStore } from '@/stores/clockSize'
 
 const clock = useTemplateRef('clock')
@@ -26,6 +27,7 @@ useResizeObserver(clock, (entries) => {
             <AppHands />
             <CloneIndex />
         </div>
+        <NoiseSmall />
     </div>
 </template>
 
