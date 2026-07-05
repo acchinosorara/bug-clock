@@ -3,6 +3,7 @@ import { setColorClass } from '@/utils/setColorClass'
 import type { CSSProperties } from 'vue'
 
 const { clockSizeSub } = storeToRefs(useClockSizeStore())
+const { delay, countMax } = useAnimationValStore()
 const { randomInt, randomDeci } = random()
 
 const noiseMin = 5
@@ -31,29 +32,39 @@ const translateMax = clockSizeSub.value / 1.75
 const translateX = ref<string[]>([])
 const translateY = ref<string[]>([])
 
+const count = ref<number>(0)
 let interval: number
 const animation = (): void => {
   interval = setInterval(() => {
+    count.value++
 
     // 1/4の確率でノイズが走る
     noiseIndex.value = isTrigger(4) ? randomInt({min: noiseMin, max: noiseMax}) : 0
 
-    if (noiseIndex.value < 1) return
-    bgClassNamesIndex.value = setVal(0, bgLength)
+    if (noiseIndex.value > 0) {
+      bgClassNamesIndex.value = setVal(0, bgLength)
 
-    // 横長にする
-    width.value = setVal(4, widthMax)
-    height.value = width.value.map(w => randomInt({min: 1, max: w / 3}))
+      // 横長にする
+      width.value = setVal(4, widthMax)
+      height.value = width.value.map(w => randomInt({min: 1, max: w / 3}))
 
-    opacity.value = setArray(noiseIndex.value, () => randomDeci({min: 0.6, max: 1}))
+      opacity.value = setArray(noiseIndex.value, () => randomDeci({min: 0.6, max: 1}))
 
-    translateX.value = setArray(noiseIndex.value, () => `${setPlusMinus()} ${randomInt({min: 0, max: translateMax})}`)
-    translateY.value = setArray(noiseIndex.value, () => `${setPlusMinus()} ${randomInt({min: 0, max: translateMax})}`)
-  }, 100)
+      translateX.value = setArray(noiseIndex.value, () => `${setPlusMinus()} ${randomInt({min: 0, max: translateMax})}`)
+      translateY.value = setArray(noiseIndex.value, () => `${setPlusMinus()} ${randomInt({min: 0, max: translateMax})}`)
+    }
+
+    if (count.value >= countMax) reset()
+  }, delay)
 }
 
 onMounted(animation)
-onUnmounted(() => clearInterval(interval))
+
+const reset = (): void => {
+  clearInterval(interval)
+  count.value = 0
+  animation()
+}
 
 const setStyle = (i: number): CSSProperties => {
   return {
