@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { setColorClass } from '@/utils/setColorClass'
+import { useUpdateInterval } from '@/composables/updateInterval'
 import type { CSSProperties } from 'vue'
 
 const { clockSizeSub } = storeToRefs(useClockSizeStore())
 const { delay, countMax } = useAnimationValStore()
 const { randomInt, randomDeci } = random()
 
-const noiseMin = 5
+const noiseMin = 1
 const noiseMax = 40
 const noiseIndex = ref<number>(0)
 
@@ -32,13 +33,10 @@ const translateMax = clockSizeSub.value / 1.75
 const translateX = ref<string[]>([])
 const translateY = ref<string[]>([])
 
-const count = ref<number>(0)
-let interval: number
-const animation = (): void => {
-  interval = setInterval(() => {
-    count.value++
-
-    // 1/4の確率でノイズが走る
+useUpdateInterval({
+  delay,
+  countMax,
+  tick: () => {
     noiseIndex.value = isTrigger(4) ? randomInt({min: noiseMin, max: noiseMax}) : 0
 
     if (noiseIndex.value > 0) {
@@ -53,18 +51,8 @@ const animation = (): void => {
       translateX.value = setArray(noiseIndex.value, () => `${setPlusMinus()} ${randomInt({min: 0, max: translateMax})}`)
       translateY.value = setArray(noiseIndex.value, () => `${setPlusMinus()} ${randomInt({min: 0, max: translateMax})}`)
     }
-
-    if (count.value >= countMax) reset()
-  }, delay)
-}
-
-onMounted(animation)
-
-const reset = (): void => {
-  clearInterval(interval)
-  count.value = 0
-  animation()
-}
+  }
+})
 
 const setStyle = (i: number): CSSProperties => {
   return {

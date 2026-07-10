@@ -27,8 +27,8 @@ useResizeObserver(clock, (entries) => {
             <AppHands />
             <CloneIndex />
         </div>
-        <NoiseSmall />
     </div>
+    <NoiseSmall />
 </template>
 
 <style lang="scss" scoped>
