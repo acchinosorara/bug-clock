@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useUpdateInterval } from '@/composables/updateInterval'
 import type { CSSProperties } from 'vue'
 
 const { delay, countMax } = useAnimationValStore()
@@ -21,25 +22,15 @@ const polygons = [
     '0 0, 50% 50%, 100% 40%, 100% 60%, 50% 50%, 0 100%'
 ]
 
-const count = ref<number>(0)
-let interval: number
-
-const animation = (): void => {
-    interval = setInterval(() => {
-        count.value++
-        if (count.value >= countMax) reset()
+useUpdateInterval({
+    delay,
+    countMax,
+    tick: () => {
         classIndex.value = randomInt({min: 0, max: bgClassNames.length})
         polygonIndex.value = randomInt({min: 0, max: polygons.length})
         rotate.value = randomInt({min: 0, max: 360})
-    }, delay)
-}
-onMounted(animation)
-
-const reset = (): void => {
-    clearInterval(interval)
-    count.value = 0
-    animation()
-}
+    }
+})
 
 const setClass = (): string => bgClassNames[classIndex.value] ?? ''
 const setStyle = (): CSSProperties => {

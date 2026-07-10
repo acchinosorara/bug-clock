@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useClockSizeStore } from '@/stores/clockSize'
 import { useScaleHeightStore } from '@/stores/scaleHeight'
+import { useUpdateIntervalArray } from '@/composables/updateIntervalArray'
 import type { CSSProperties } from 'vue'
 
 const { delay, countMax } = useAnimationValStore()
@@ -27,38 +28,20 @@ onMounted(() => {
 })
 
 // 波形アニメーション
-const intervals = setArray<number>(seconds, 0)
-const counts = ref<number[]>(
-    setArray<number>(seconds, 0)
-)
 const stretches = ref<number[]>(
     setArray<number>(seconds, 1)
 )
-const interval = (i: number): void => {
-    intervals[i] = setInterval(() => {
-        counts.value[i]++
-        const count = counts.value.at(i)
-        if (count && count > countMax) {
-            reset(i)
-            interval(i)
-        }
+useUpdateIntervalArray({
+    delay,
+    countMax,
+    length: seconds,
+    tick: (i) => {
         const isLong = isTrigger(180)
         const minCoef = isLong ? 10 : 0.5
         const maxCoef = isLong ? 20 : 2
         stretches.value[i] = randomDeci({min: minCoef, max: maxCoef})
-    }, delay)
-}
-const wavy = (): void => {
-    for (let i = 0; i < seconds; i++) {
-        interval(i)
     }
-}
-onMounted(wavy)
-
-const reset = (i: number): void => {
-    clearInterval(intervals[i])
-    counts.value[i] = 0
-}
+})
 
 // styleを出力
 const setStyle = (scd: number): CSSProperties => {

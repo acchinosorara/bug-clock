@@ -2,6 +2,7 @@
 import { setColorClass } from '@/utils/setColorClass'
 import { useClockSizeStore } from '@/stores/clockSize'
 import { useScaleHeightStore } from '@/stores/scaleHeight'
+import { useUpdateIntervalArray } from '@/composables/updateIntervalArray'
 import type { CSSProperties } from 'vue'
 
 const { delay, countMax } = useAnimationValStore()
@@ -144,38 +145,16 @@ const setBorder = (i: number): void => {
     borderState[`${color}`] = true
 }
 
-// 一定間隔で更新
-const intervals = setArray<number>(hour, 0)
-const counts = ref<number[]>(
-    setArray<number>(hour, 0)
-)
-const interval = (i: number): void => {
-    intervals[i] = setInterval(() => {
-        counts.value[i] = (counts.value[i] ?? 0) + 1
-        const count = counts.value.at(i)
-
-        if (count && count > countMax) {
-            reset(i)
-            interval(i)
-        }
-
+useUpdateIntervalArray({
+    delay,
+    countMax,
+    length: hour,
+    tick: (i) => {
         setCharacter(i)
         setBackground(i)
         setBorder(i)
-    }, delay)
-}
-
-const garbled = (): void => {
-    for (let i = 0; i < hour; i++) {
-        interval(i)
     }
-}
-onMounted(garbled)
-
-const reset = (i: number): void => {
-    clearInterval(intervals[i])
-    counts.value[i] = 0
-}
+})
 
 const { clockSizeSub } = storeToRefs(useClockSizeStore())
 const scaleStore = useScaleHeightStore()

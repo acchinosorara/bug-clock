@@ -1,11 +1,13 @@
+import { useUpdateInterval } from '@/composables/updateInterval'
+
 type GlitchColor = BorderClassNames[number] | ''
-type Glitch = {
+interface GlitchOptions {
     glitchX: Ref<string[]>
     glitchY: Ref<string[]>
     glitchColor: Ref<GlitchColor[]>
 }
 
-export const useGlitch = (index: number): Glitch => {
+export const useGlitch = (index: number): GlitchOptions => {
     const { delay, countMax } = useAnimationValStore()
     const { randomInt } = random()
     const { borderClassNames } = setColorClass()
@@ -21,9 +23,6 @@ export const useGlitch = (index: number): Glitch => {
         setArray<GlitchColor>(index, '')
     )
 
-    const count = ref<number>(0)
-    let interval: number
-
     const setPos = (): string => {
         const sign = setPlusMinus()
         const pixel = 5
@@ -37,10 +36,10 @@ export const useGlitch = (index: number): Glitch => {
         return borderClassNames[index] ?? ''
     }
 
-    const glitch = (): void => {
-        interval = setInterval(() => {
-            count.value++
-
+    useUpdateInterval({
+        delay,
+        countMax,
+        tick: () => {
             for (let i = 0; i < index; i++) {
                 if (!isTrigger(3)) {
                     x.value[i] = setPos()
@@ -48,17 +47,8 @@ export const useGlitch = (index: number): Glitch => {
                     className.value[i] = setClass()
                 }
             }
-
-            if (count.value >= countMax) reset()
-        }, delay)
-    }
-    onMounted(glitch)
-
-    const reset = (): void => {
-        count.value = 0
-        clearInterval(interval)
-        glitch()
-    }
+        }
+    })
 
     return {
         glitchX: x,
