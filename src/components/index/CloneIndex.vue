@@ -8,7 +8,7 @@ const { randomInt, randomDeci } = random()
 const { width: windowWidth, height: windowHeight } = useWindowSize()
 
 const hour = 12
-const setIndex = (i: number): number => i === 0 ? 12 : i
+const setIndex = (i: number): number => (i === 0 ? 12 : i)
 
 const isClone = ref<boolean>(false)
 const cloneTarget = ref<number>(0)
@@ -21,7 +21,7 @@ const childCount = ref<number>(0)
 // 文字間隔を出力
 const gap = ref<number>(0)
 const setGap = (): void => {
-    gap.value = randomDeci({min: 1, max: 4})
+    gap.value = randomDeci({ min: 1, max: 4 })
 }
 
 // translateの値を定義
@@ -59,9 +59,9 @@ const translateState = computed(() => {
 
 // translateの値を出力
 const setTranslate = (): void => {
-    (Object.keys(translate.value) as (keyof Translate)[]).forEach((key) => {
+    ;(Object.keys(translate.value) as (keyof Translate)[]).forEach((key) => {
         translate.value[key].operator = setPlusMinus()
-        translate.value[key].val = randomInt({min: 0, max: 50})
+        translate.value[key].val = randomInt({ min: 0, max: 50 })
     })
 }
 
@@ -98,16 +98,17 @@ const isOverflow = (): boolean | void => {
 const isBlinks = ref<boolean[]>([])
 const blink = (): void => {
     blinkInterval.value = setInterval(() => {
-        const blinkTarget = randomInt({min: 0, max: childCount.value + 1})
+        const blinkTarget = randomInt({ min: 0, max: childCount.value + 1 })
         isBlinks.value[blinkTarget] = isTrigger(2)
     }, 50)
 }
-watch(() => childCount.value,
-    len => {
+watch(
+    () => childCount.value,
+    (len) => {
         isBlinks.value = Array(len).fill(false)
     },
     {
-        immediate: true 
+        immediate: true
     }
 )
 
@@ -116,13 +117,12 @@ const setClone = (): void => {
     isClone.value = true
 
     // 複製文字を1つ指定
-    cloneTarget.value = setIndex(randomInt({min: 0, max: hour}))
+    cloneTarget.value = setIndex(randomInt({ min: 0, max: hour }))
     setGap()
     setTranslate()
     childInterval.value = setInterval(() => {
-
         // 複製を重ねるごとに終了確率を上げる
-        const probability = randomInt({min: 0, max: 300})
+        const probability = randomInt({ min: 0, max: 400 })
 
         // 複製終了
         if (probability < childCount.value || isOverflow()) {
@@ -150,9 +150,7 @@ const handleClone = (): void => {
     if (isTrigger(2)) setClone()
 }
 
-const parentInterval = ref<number>(
-    setInterval(handleClone, 1000)
-)
+const parentInterval = ref<number>(setInterval(handleClone, 2000))
 const childInterval = ref<number>()
 const blinkInterval = ref<number>()
 
@@ -174,7 +172,7 @@ const childStyle = (i: number): CSSProperties => {
     const index = i + 1
     const { x, y, operatorX, operatorY } = translateState.value
     return {
-        'translate': `
+        translate: `
             calc(-50% ${operatorX} ${index * gap.value * x}%)
             calc(-50% ${operatorY} ${index * gap.value * y}%)
         `
@@ -184,13 +182,14 @@ const childStyle = (i: number): CSSProperties => {
 
 <template>
     <div class="index">
-        <div
-            v-if="isClone"
-            :style="parentStyle(cloneTarget)" class="index-text"
-        >
-            <span v-for="(_, i) in childCount" :key="i" ref="cloneRef"
+        <div v-if="isClone" :style="parentStyle(cloneTarget)" class="index-text">
+            <span
+                v-for="(_, i) in childCount"
+                :key="i"
+                ref="cloneRef"
                 :style="childStyle(i)"
-                class="index-clone" :class="{ blink: isBlinks[i] }"
+                class="index-clone"
+                :class="{ blink: isBlinks[i] }"
             >
                 {{ cloneTarget }}
             </span>
