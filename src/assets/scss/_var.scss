@@ -6,6 +6,13 @@ $blue: #047aff;
 $pink: #ff04b4;
 $green: #04ff4f;
 
+$colors: (
+    orange: $orange,
+    blue: $blue,
+    pink: $pink,
+    green: $green
+);
+
 $border-light: 2px;
 $border-regular: calc(var(--border-base) * 1.5);
 $border-medium: calc(var(--border-base) * 2);
