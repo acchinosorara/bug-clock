@@ -1,16 +1,18 @@
-const colors = ['orange', 'blue', 'white'] as const
-type Color = typeof colors[number]
-type ColorClass = {
-    colorClassNames: `color-${Color}`[]
-    bgClassNames: `bg-${Color}`[]
-    borderClassNames: `border-${Color}`[]
+const colors = colorPattern()
+type Color = (typeof colors)[number]
+interface ColorClass {
+    colorClassNames: `color-${Color[number]}`[][]
+    bgClassNames: `bg-${Color[number]}`[][]
+    borderClassNames: `border-${Color[number]}`[][]
 }
 
 export type BorderClassNames = ColorClass['borderClassNames'][number]
 
 export const setColorClass = (): ColorClass => {
-    const classNames = <T extends string>(prop: T): `${T}-${Color}`[] => {
-        return colors.map(color => `${prop}-${color}` as `${T}-${Color}`)
+    const classNames = <T extends string>(prop: T): `${T}-${Color[number]}`[][] => {
+        return colors.map((pattern) =>
+            pattern.map((color) => `${prop}-${color}` as `${T}-${Color[number]}`)
+        )
     }
 
     const colorClassNames = classNames('color')
