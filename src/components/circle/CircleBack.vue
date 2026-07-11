@@ -62,18 +62,7 @@ const setStyle = (): CSSProperties => {
         &-orange {
             background-color: $orange;
         }
-        &-blue {
-            background-color: $blue;
-        }
-        &-white {
-            background-color: $gray;
-        }
-        &-pink {
-            background-color: $pink;
-        }
-        &-green {
-            background-color: $green;
-        }
+        @include bg-colors;
     }
 }
 </style>

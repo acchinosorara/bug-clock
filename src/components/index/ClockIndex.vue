@@ -158,36 +158,14 @@ const setTextStyle = (i: number): CSSProperties => {
             &-white {
                 background-color: $light;
             }
-            &-orange {
-                background-color: $orange;
-            }
-            &-blue {
-                background-color: $blue;
-            }
-            &-pink {
-                background-color: $pink;
-            }
-            &-green {
-                background-color: $green;
-            }
+            @include bg-colors;
         }
 
         &.border {
             &-white {
                 border-color: $light;
             }
-            &-orange {
-                border-color: $orange;
-            }
-            &-blue {
-                border-color: $blue;
-            }
-            &-pink {
-                border-color: $pink;
-            }
-            &-green {
-                border-color: $green;
-            }
+            @include border-colors;
         }
 
         @layer overwrite {
@@ -196,18 +174,7 @@ const setTextStyle = (i: number): CSSProperties => {
                     &-white {
                         color: $light;
                     }
-                    &-orange {
-                        color: $orange;
-                    }
-                    &-blue {
-                        color: $blue;
-                    }
-                    &-pink {
-                        color: $pink;
-                    }
-                    &-green {
-                        color: $green;
-                    }
+                    @include text-colors;
                 }
 
                 &.invert {

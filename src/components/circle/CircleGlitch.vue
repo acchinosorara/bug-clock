@@ -41,18 +41,7 @@ const setStyle = (i: number): CSSProperties => {
         &-orange {
             border-color: $orange;
         }
-        &-blue {
-            border-color: $blue;
-        }
-        &-white {
-            border-color: $gray;
-        }
-        &-pink {
-            border-color: $pink;
-        }
-        &-green {
-            border-color: $green;
-        }
+        @include border-colors;
     }
 }
 </style>

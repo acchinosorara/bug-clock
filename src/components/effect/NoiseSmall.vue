@@ -95,18 +95,7 @@ const setStyle = (i: number): CSSProperties => {
         &-orange {
             background-color: $orange;
         }
-        &-blue {
-            background-color: $blue;
-        }
-        &-white {
-            background-color: $light;
-        }
-        &-pink {
-            background-color: $pink;
-        }
-        &-green {
-            background-color: $green;
-        }
+        @include bg-colors;
     }
 }
 </style>
