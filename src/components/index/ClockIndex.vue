@@ -3,21 +3,25 @@ import { setColorClass } from '@/utils/setColorClass'
 import { useClockSizeStore } from '@/stores/clockSize'
 import { useScaleHeightStore } from '@/stores/scaleHeight'
 import { useUpdateIntervalArray } from '@/composables/updateIntervalArray'
+import { useIndexInvert } from '@/composables/index/indexInvert'
+import { useIndexBackground } from '@/composables/index/indexBackground'
+import { useIndexBorder } from '@/composables/index/indexBorder'
+import { useIndexColor } from '@/composables/index/indexColor'
 import type { CSSProperties } from 'vue'
+import type { ClassState } from '@/types/ClassState'
 
 const { delay, countMax } = useAnimationValStore()
 const { randomInt } = random()
-const { colorClassNames, bgClassNames, borderClassNames } = setColorClass()
+const { colorsIndex } = storeToRefs(useColorsIndex())
 
 const hour = 12
 const setIndex = (i: number): string => {
     const val = i === 0 ? 12 : i
     return val.toString()
 }
-const indexDefaults = setArray<string[]>(hour, i => setIndex(i).split(''))
-const indexRefs = ref<string[][]>(
-    indexDefaults.map(index => [...index])
-)
+
+const indexDefaults = setArray<string[]>(hour, (i) => setIndex(i).split(''))
+const indexRefs = ref<string[][]>(indexDefaults.map((index) => [...index]))
 
 const garbledCharacters = [
     ['Q', '@', '□'],
@@ -32,51 +36,39 @@ const garbledCharacters = [
     ['P', 'q', ',']
 ]
 
-// class名の状態管理
-type ClassName = Record<string, boolean>
-const setStateObj = (names: string[]): ClassName => {
-    return Object.fromEntries(
-        names.map(name => [name, false])
-    )
-}
-const bgClassStates = ref<ClassName[]>(
-    Array.from({length: hour}, () => setStateObj(bgClassNames))
-)
-const borderClassStates = ref<ClassName[]>(
-    Array.from({length: hour}, () => setStateObj(borderClassNames))
-)
-const colorClassStates = ref<ClassName[][]>(
-    indexDefaults.map(index => index.map(() =>
-        setStateObj(colorClassNames)
-    ))
-)
-const invert = 'invert'
-const invertNames = [`${invert}-x`, `${invert}-y`, `${invert}-xy`]
-const invertClassStates = ref<ClassName[][]>(
-    indexDefaults.map(index => index.map(() =>
-        setStateObj(invertNames)
-    ))
-)
-const setTextClass = (i: number): ClassName[] | void => {
+const {
+    colorClassNames: colorClassPatterns,
+    bgClassNames: bgClassPatterns,
+    borderClassNames: borderClassPatterns
+} = setColorClass()
+
+// classの状態管理（インデックス）
+const bgClassNames = computed(() => bgClassPatterns[colorsIndex.value] ?? [])
+const borderClassNames = computed(() => borderClassPatterns[colorsIndex.value] ?? [])
+const { bgClassStates, currentBackgrounds, setBackground } = useIndexBackground(hour, bgClassNames)
+const { borderClassStates, setBorder } = useIndexBorder(hour, borderClassNames, currentBackgrounds)
+
+// class切替（インデックス）
+const setTextClass = (i: number): ClassState[] | void => {
     const background = bgClassStates.value.at(i)
     const border = borderClassStates.value.at(i)
     if (!background || !border) return
-    return [
-        background,
-        border
-    ]
+    return [background, border]
 }
-const setCharClass = (i: number, index: number): ClassName[] | void => {
+
+// classの状態管理（文字単位）
+const colorClassNames = computed(() => colorClassPatterns[colorsIndex.value] ?? [])
+const { colorClassStates, setColor } = useIndexColor(indexDefaults, colorClassNames)
+const { invertClassStates, setInvert } = useIndexInvert(indexDefaults)
+
+// class切替（文字単位）
+const setCharClass = (i: number, index: number): ClassState[] | void => {
     const color = colorClassStates.value.at(i)?.at(index)
     const invert = invertClassStates.value.at(i)?.at(index)
     if (!color || !invert) return
-    return [
-        color,
-        invert
-    ]
+    return [color, invert]
 }
 
-// 文字列のデザインを指定
 const setCharacter = (i: number): void => {
     indexRefs.value[i]?.forEach((_, index) => {
         const defaultChar = indexDefaults.at(i)?.at(index)
@@ -84,65 +76,14 @@ const setCharacter = (i: number): void => {
         const garbledChar = indexRefs.value.at(i)
         if (!defaultChar || !list || !garbledChar) return
 
-        // 文字化け or 元の数字
-        const charLength = randomInt({min: 0, max: list.length + 1})
+        // 文字化け or 元の数字を保持
+        const charLength = randomInt({ min: 0, max: list.length + 1 })
         const randomChar = list.at(charLength)
         garbledChar[index] = randomChar || defaultChar
 
-        const colorState = colorClassStates.value.at(i)?.at(index)
-        const invertState = invertClassStates.value.at(i)?.at(index)
-        if (!colorState || !invertState) return
-
-        // 文字色
-        for (const name of colorClassNames) {
-            const isColorClass = isTrigger(6)
-            colorState[name] = isColorClass
-            if (isColorClass) return
-        }
-
-        // 上下左右反転
-        for (const name of invertNames) {
-            invertState[name] = false
-            if (isTrigger(6)) {
-                invertState[name] = true
-                return
-            }
-        }
+        setColor(i, index)
+        setInvert(i, index)
     })
-}
-
-// 現在の背景色を記録
-const currentBackgrounds = ref<(string | null)[]>(
-    setArray<string | null>(hour, null)
-)
-
-// 背景色を指定
-const setBackground = (i: number): void => {
-    const backgroundState = bgClassStates.value.at(i)
-    if (!backgroundState) return
-    let selected: string | null = null
-    for (const name of bgClassNames) {
-        const isClass = isTrigger(6)
-        backgroundState[name] = isClass
-        if (isClass) selected = name
-    }
-    currentBackgrounds.value[i] = selected
-}
-
-// 枠線を指定
-const setBorder = (i: number): void => {
-    const borderState = borderClassStates.value.at(i)
-    if (!borderState) return
-    for (const name of borderClassNames) {
-        borderState[name] = false
-    }
-    const bg = currentBackgrounds.value[i]
-    const isBorder = isTrigger(2)
-    if (!bg || !isBorder) return
-
-    const reBorderClass = borderClassNames.filter(name => name !== bg)
-    const color = reBorderClass[randomInt({min: 0, max: reBorderClass.length})]
-    borderState[`${color}`] = true
 }
 
 useUpdateIntervalArray({
@@ -175,12 +116,18 @@ const setTextStyle = (i: number): CSSProperties => {
 <template>
     <div class="index">
         <div
-            v-for="(_, i) in hour" :key="i"
+            v-for="(_, i) in hour"
+            :key="i"
             :style="setTextStyle(i)"
-            :class="setTextClass(i)" class="index-text">
+            :class="setTextClass(i)"
+            class="index-text"
+        >
             <span
-                v-for="(char, index) in indexRefs[i]" :key="index"
-                :class="setCharClass(i, index)" class="index-text-char">
+                v-for="(char, index) in indexRefs[i]"
+                :key="index"
+                :class="setCharClass(i, index)"
+                class="index-text-char"
+            >
                 {{ char }}
             </span>
         </div>
@@ -217,6 +164,12 @@ const setTextStyle = (i: number): CSSProperties => {
             &-blue {
                 background-color: $blue;
             }
+            &-pink {
+                background-color: $pink;
+            }
+            &-green {
+                background-color: $green;
+            }
         }
 
         &.border {
@@ -228,6 +181,12 @@ const setTextStyle = (i: number): CSSProperties => {
             }
             &-blue {
                 border-color: $blue;
+            }
+            &-pink {
+                border-color: $pink;
+            }
+            &-green {
+                border-color: $green;
             }
         }
 
@@ -242,6 +201,12 @@ const setTextStyle = (i: number): CSSProperties => {
                     }
                     &-blue {
                         color: $blue;
+                    }
+                    &-pink {
+                        color: $pink;
+                    }
+                    &-green {
+                        color: $green;
                     }
                 }
 
