@@ -1,4 +1,4 @@
-@use "_var" as *;
+@use '_var' as *;
 
 @mixin flex-center {
     display: flex;
@@ -40,7 +40,7 @@
 
 @mixin hand-inner {
     &::before {
-        content: "";
+        content: '';
         position: absolute;
         width: 50%;
         height: calc(100% - $border-regular);
@@ -54,5 +54,29 @@
 @mixin mq {
     @media screen and (max-width: 480px) {
         @content;
+    }
+}
+
+@mixin text-colors {
+    @each $name, $value in $colors {
+        &-#{$name} {
+            color: $value;
+        }
+    }
+}
+
+@mixin bg-colors {
+    @each $name, $value in $colors {
+        &-#{$name} {
+            background-color: $value;
+        }
+    }
+}
+
+@mixin border-colors {
+    @each $name, $value in $colors {
+        &-#{$name} {
+            border-color: $value;
+        }
     }
 }
