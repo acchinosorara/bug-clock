@@ -9,7 +9,7 @@ const setClass = (i: number) => glitchColor.value[i]
 const setTranslate = (val?: string): string => `calc(-50% ${val ?? ''})`
 const setStyle = (i: number): CSSProperties => {
     return {
-        'translate': `
+        translate: `
             ${setTranslate(glitchX.value[i])}
             ${setTranslate(glitchY.value[i])}
         `
@@ -19,11 +19,12 @@ const setStyle = (i: number): CSSProperties => {
 
 <template>
     <div
-        v-for="(glitch, i) in glitchIndex" :key="glitch"
-        class="circle" :class="setClass(i)"
+        v-for="(glitch, i) in glitchIndex"
+        :key="glitch"
+        class="circle"
+        :class="setClass(i)"
         :style="setStyle(i)"
-    >
-    </div>
+    ></div>
 </template>
 
 <style lang="scss" scoped>
@@ -45,6 +46,12 @@ const setStyle = (i: number): CSSProperties => {
         }
         &-white {
             border-color: $gray;
+        }
+        &-pink {
+            border-color: $pink;
+        }
+        &-green {
+            border-color: $green;
         }
     }
 }

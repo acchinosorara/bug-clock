@@ -10,30 +10,25 @@ interface GlitchOptions {
 export const useGlitch = (index: number): GlitchOptions => {
     const { delay, countMax } = useAnimationValStore()
     const { randomInt } = random()
+    const { colorsIndex } = storeToRefs(useColorsIndex())
     const { borderClassNames } = setColorClass()
 
     const unit = 'px'
-    const x = ref<string[]>(
-        setArray<string>(index, `0${unit}`)
-    )
-    const y = ref<string[]>(
-        setArray<string>(index, `0${unit}`)
-    )
-    const className = ref<GlitchColor[]>(
-        setArray<GlitchColor>(index, '')
-    )
+    const x = ref<string[]>(setArray<string>(index, `0${unit}`))
+    const y = ref<string[]>(setArray<string>(index, `0${unit}`))
+    const className = ref<GlitchColor[]>(setArray<GlitchColor>(index, ''))
 
     const setPos = (): string => {
         const sign = setPlusMinus()
         const pixel = 5
-        const num = randomInt({min: 0, max: pixel})
+        const num = randomInt({ min: 0, max: pixel })
         return `${sign} ${num}${unit}`
     }
 
     const setClass = (): GlitchColor => {
         const length = borderClassNames.length
-        const index = randomInt({min: 0, max: length + 1})
-        return borderClassNames[index] ?? ''
+        const classNamesIndex = randomInt({ min: 0, max: length + 1 })
+        return borderClassNames[colorsIndex.value]?.[classNamesIndex] ?? ''
     }
 
     useUpdateInterval({

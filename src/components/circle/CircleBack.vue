@@ -4,6 +4,7 @@ import type { CSSProperties } from 'vue'
 
 const { delay, countMax } = useAnimationValStore()
 const { randomInt } = random()
+const { colorsIndex } = storeToRefs(useColorsIndex())
 const { bgClassNames } = setColorClass()
 
 const classIndex = ref<number>(0)
@@ -26,17 +27,21 @@ useUpdateInterval({
     delay,
     countMax,
     tick: () => {
-        classIndex.value = randomInt({min: 0, max: bgClassNames.length})
-        polygonIndex.value = randomInt({min: 0, max: polygons.length})
-        rotate.value = randomInt({min: 0, max: 360})
+        classIndex.value = randomInt({ min: 0, max: bgClassNames.length })
+        polygonIndex.value = randomInt({ min: 0, max: polygons.length })
+        rotate.value = randomInt({ min: 0, max: 360 })
     }
 })
 
-const setClass = (): string => bgClassNames[classIndex.value] ?? ''
+const setClass = (): string => {
+    const className = bgClassNames[colorsIndex.value]?.[classIndex.value] ?? ''
+    return className
+}
+
 const setStyle = (): CSSProperties => {
     return {
         'clip-path': `polygon(${polygons[polygonIndex.value]})`,
-        'rotate': `${rotate.value}deg`
+        rotate: `${rotate.value}deg`
     }
 }
 </script>
@@ -62,6 +67,12 @@ const setStyle = (): CSSProperties => {
         }
         &-white {
             background-color: $gray;
+        }
+        &-pink {
+            background-color: $pink;
+        }
+        &-green {
+            background-color: $green;
         }
     }
 }
