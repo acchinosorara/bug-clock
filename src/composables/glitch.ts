@@ -10,7 +10,7 @@ interface GlitchOptions {
 export const useGlitch = (index: number): GlitchOptions => {
     const { delay, countMax } = useAnimationValStore()
     const { randomInt } = random()
-    const { colorsIndex } = storeToRefs(useColorsIndex())
+    const { colorsIndex } = storeToRefs(useColorsIndexStore())
     const { borderClassNames } = setColorClass()
 
     const unit = 'px'

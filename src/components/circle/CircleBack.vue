@@ -4,7 +4,7 @@ import type { CSSProperties } from 'vue'
 
 const { delay, countMax } = useAnimationValStore()
 const { randomInt } = random()
-const { colorsIndex } = storeToRefs(useColorsIndex())
+const { colorsIndex } = storeToRefs(useColorsIndexStore())
 const { bgClassNames } = setColorClass()
 
 const classIndex = ref<number>(0)

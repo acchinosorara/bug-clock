@@ -3,7 +3,7 @@ import { setColorClass } from '@/utils/setColorClass'
 import { useUpdateInterval } from '@/composables/updateInterval'
 import type { CSSProperties } from 'vue'
 
-const { colorsIndex } = storeToRefs(useColorsIndex())
+const { colorsIndex } = storeToRefs(useColorsIndexStore())
 const { clockSizeSub } = storeToRefs(useClockSizeStore())
 const { delay, countMax } = useAnimationValStore()
 const { randomInt, randomDeci } = random()
