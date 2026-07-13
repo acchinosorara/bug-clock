@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import AppHeader from '@/components/AppHeader.vue'
 import AppClock from '@/components/AppClock.vue'
+import { useClockKeyStore } from './stores/clockKey'
+
+const { clockKey } = storeToRefs(useClockKeyStore())
 </script>
 
 <template>
-    <article class="container">
+    <AppHeader />
+    <article :key="clockKey" class="container">
         <AppClock />
     </article>
 </template>
