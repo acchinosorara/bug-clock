@@ -12,7 +12,7 @@ import type { ClassState } from '@/types/ClassState'
 
 const { delay, countMax } = useAnimationValStore()
 const { randomInt } = random()
-const { colorsIndex } = storeToRefs(useColorsIndex())
+const { colorsIndex } = storeToRefs(useColorsIndexStore())
 
 const hour = 12
 const setIndex = (i: number): string => {
