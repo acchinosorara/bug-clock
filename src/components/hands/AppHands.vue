@@ -30,9 +30,9 @@ import Second from '@/components/hands/HandSecond.vue'
         &::before {
             @include center;
             @include circle;
-            content: "";
+            content: '';
             width: calc(100% - $border-medium);
-            background-color: $dark;
+            background-color: $dark100;
         }
     }
 }
