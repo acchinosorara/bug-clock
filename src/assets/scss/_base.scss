@@ -1,5 +1,5 @@
-@use "_var" as *;
-@use "_mixin" as *;
+@use '_var' as *;
+@use '_mixin' as *;
 
 :root {
     --border-base: 4px;
@@ -9,7 +9,9 @@
     }
 }
 
-*, *::before, ::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -22,7 +24,17 @@ html {
 }
 
 body {
-    font-family: "Google Sans Code", monospace;
+    font-family: 'Google Sans Code', monospace;
     margin: 0;
-    background-color: $dark;
+    background-color: $dark100;
+}
+
+button {
+    padding: 0;
+    border: none;
+    outline: none;
+    font: inherit;
+    color: inherit;
+    background: none;
+    cursor: pointer;
 }
