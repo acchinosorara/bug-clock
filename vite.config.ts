@@ -3,6 +3,8 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Unfonts from 'unplugin-fonts/vite'
+import Icons from 'unplugin-icons/vite'
+import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -12,22 +14,18 @@ export default defineConfig({
     plugins: [
         vue(),
         AutoImport({
-            imports: [
-                'vue',
-                '@vueuse/core',
-                'pinia'
-            ],
-            dirs: [
-                './src/utils',
-                './src/stores'
-            ],
+            imports: ['vue', '@vueuse/core', 'pinia'],
+            dirs: ['./src/utils', './src/stores'],
             dts: 'auto-imports.d.ts'
         }),
         Unfonts({
             google: {
-                families: [
-                    'Google Sans Code'
-                ]
+                families: ['Google Sans Code']
+            }
+        }),
+        Icons({
+            customCollections: {
+                'my-icons': FileSystemIconLoader('./src/assets/icons')
             }
         })
     ],
