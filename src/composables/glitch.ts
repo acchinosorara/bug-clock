@@ -1,4 +1,5 @@
 import { useUpdateInterval } from '@/composables/updateInterval'
+import { setCommonClass, type BorderClassNames } from '@/utils/commonClass/setCommonClass'
 
 type GlitchColor = BorderClassNames[number] | ''
 interface GlitchOptions {
@@ -11,7 +12,7 @@ export const useGlitch = (index: number): GlitchOptions => {
     const { delay, countMax } = useAnimationValStore()
     const { randomInt } = random()
     const { colorsIndex } = storeToRefs(useColorsIndexStore())
-    const { borderClassNames } = setColorClass()
+    const { borderClassNames } = setCommonClass()
 
     const unit = 'px'
     const x = ref<string[]>(setArray<string>(index, `0${unit}`))

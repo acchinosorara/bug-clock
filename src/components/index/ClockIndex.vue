@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { setColorClass } from '@/utils/setColorClass'
-import { useClockSizeStore } from '@/stores/clockSize'
-import { useScaleHeightStore } from '@/stores/scaleHeight'
+import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import { useUpdateIntervalArray } from '@/composables/updateIntervalArray'
 import { useIndexInvert } from '@/composables/index/indexInvert'
 import { useIndexBackground } from '@/composables/index/indexBackground'
@@ -40,7 +38,7 @@ const {
     colorClassNames: colorClassPatterns,
     bgClassNames: bgClassPatterns,
     borderClassNames: borderClassPatterns
-} = setColorClass()
+} = setCommonClass()
 
 // classの状態管理（インデックス）
 const bgClassNames = computed(() => bgClassPatterns[colorsIndex.value] ?? [])
@@ -176,18 +174,7 @@ const setTextStyle = (i: number): CSSProperties => {
                     }
                     @include text-colors;
                 }
-
-                &.invert {
-                    &-x {
-                        scale: -1 1;
-                    }
-                    &-y {
-                        scale: 1 -1;
-                    }
-                    &-xy {
-                        scale: -1 -1;
-                    }
-                }
+                @include invert;
             }
         }
     }

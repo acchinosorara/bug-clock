@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useUpdateInterval } from '@/composables/updateInterval'
+import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import type { CSSProperties } from 'vue'
 
 const { delay, countMax } = useAnimationValStore()
 const { randomInt } = random()
 const { colorsIndex } = storeToRefs(useColorsIndexStore())
-const { bgClassNames } = setColorClass()
+const { bgClassNames } = setCommonClass()
 
 const classIndex = ref<number>(0)
 const polygonIndex = ref<number>(0)

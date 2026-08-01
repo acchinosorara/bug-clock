@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { setColorClass } from '@/utils/setColorClass'
+import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import { useUpdateInterval } from '@/composables/updateInterval'
 import type { CSSProperties } from 'vue'
 
@@ -18,7 +18,7 @@ const setVal = (minVal: number, maxVal: number): number[] => {
 }
 
 // ノイズ総数分のbgClassNamesインデックス番号
-const { bgClassNames } = setColorClass()
+const { bgClassNames } = setCommonClass()
 const bgLength = bgClassNames.length
 const bgClassNamesIndex = ref<number[]>([])
 
@@ -92,9 +92,6 @@ const setStyle = (i: number): CSSProperties => {
     left: 50%;
 
     &.bg {
-        &-orange {
-            background-color: $orange;
-        }
         @include bg-colors;
     }
 }
