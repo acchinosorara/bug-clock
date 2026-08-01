@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Hour from '@/components/hands/HandHour.vue'
-import Minute from '@/components/hands/HandMinute.vue'
-import Second from '@/components/hands/HandSecond.vue'
+import Hour from './HandHour.vue'
+import Minute from './HandMinute.vue'
+import Second from './HandSecond.vue'
 </script>
 
 <template>

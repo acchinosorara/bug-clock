@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import CircleBack from '@/components/circle/CircleBack.vue'
-import CircleGlitch from '@/components/circle/CircleGlitch.vue'
+import CircleBack from './CircleBack.vue'
+import CircleGlitch from './CircleGlitch.vue'
 </script>
 
 <template>
