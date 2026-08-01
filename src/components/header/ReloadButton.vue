@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useClockKeyStore } from '@/stores/clockKey'
 import ReloadIcon from '~icons/my-icons/reload'
 
 const { clockKey } = storeToRefs(useClockKeyStore())
@@ -26,10 +25,6 @@ const reload = () => {
     width: 64px;
     background-color: $dark200;
     color: $light;
-
-    @include hover {
-        background-color: $dark300;
-    }
 
     svg {
         width: 50%;
