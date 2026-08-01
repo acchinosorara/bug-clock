@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Reload from '@/components/header/ReloadButton.vue'
+import Reload from './header/ReloadButton.vue'
 </script>
 
 <template>
