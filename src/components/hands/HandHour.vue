@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useVibrate } from '@/composables/vibrate'
 import type { CSSProperties } from 'vue'
+
+const { now } = storeToRefs(useNowStore())
 const vibrateVal = useVibrate()
 
-const now = useNow()
 const hour = computed<number>(() => now.value.getHours() % 12)
 const angle = computed<CSSProperties>(() => {
     return {
