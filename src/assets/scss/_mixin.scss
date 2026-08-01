@@ -81,10 +81,34 @@
     }
 }
 
+@mixin bg-colors-pref($pref) {
+    @each $name, $value in $colors {
+        &-#{$name} {
+            &::#{$pref} {
+                background-color: $value;
+            }
+        }
+    }
+}
+
 @mixin border-colors {
     @each $name, $value in $colors {
         &-#{$name} {
             border-color: $value;
+        }
+    }
+}
+
+@mixin invert {
+    &.invert {
+        &-x {
+            scale: -1 1;
+        }
+        &-y {
+            scale: 1 -1;
+        }
+        &-xy {
+            scale: -1 -1;
         }
     }
 }
