@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import AppCircle from '@/components/circle/AppCircle.vue'
-import ClockScale from '@/components/scale/ClockScale.vue'
-import AppHands from '@/components/hands/AppHands.vue'
-import ClockIndex from '@/components/index/ClockIndex.vue'
-import CloneIndex from '@/components/index/CloneIndex.vue'
-import NoiseSmall from '@/components/effect/NoiseSmall.vue'
-import { useClockSizeStore } from '@/stores/clockSize'
+import AppCircle from './circle/AppCircle.vue'
+import ClockScale from './scale/ClockScale.vue'
+import AppHands from './hands/AppHands.vue'
+import ClockIndex from './index/ClockIndex.vue'
+import CloneIndex from './index/CloneIndex.vue'
+import NoiseSmall from './effect/NoiseSmall.vue'
 
 const clock = useTemplateRef('clock')
 const clockSizeStore = useClockSizeStore()
@@ -19,7 +18,7 @@ useResizeObserver(clock, (entries) => {
 </script>
 
 <template>
-    <div class="clock" :style="{maxWidth: `${clockSize}px`}">
+    <div class="clock" :style="{ maxWidth: `${clockSize}px` }">
         <AppCircle />
         <div ref="clock" class="clock-inner">
             <ClockScale />
