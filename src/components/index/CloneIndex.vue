@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { useClockSizeStore } from '@/stores/clockSize'
-import { useScaleHeightStore } from '@/stores/scaleHeight'
-import { setPlusMinus } from '@/utils/setPlusMinus'
 import type { CSSProperties } from 'vue'
 
 const { randomInt, randomDeci } = random()

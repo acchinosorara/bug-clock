@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useClockSizeStore } from '@/stores/clockSize'
-import { useScaleHeightStore } from '@/stores/scaleHeight'
 import { useUpdateIntervalArray } from '@/composables/updateIntervalArray'
 import type { CSSProperties } from 'vue'
 
@@ -28,9 +26,7 @@ onMounted(() => {
 })
 
 // 波形アニメーション
-const stretches = ref<number[]>(
-    setArray<number>(seconds, 1)
-)
+const stretches = ref<number[]>(setArray<number>(seconds, 1))
 useUpdateIntervalArray({
     delay,
     countMax,
@@ -39,7 +35,7 @@ useUpdateIntervalArray({
         const isLong = isTrigger(180)
         const minCoef = isLong ? 10 : 0.5
         const maxCoef = isLong ? 20 : 2
-        stretches.value[i] = randomDeci({min: minCoef, max: maxCoef})
+        stretches.value[i] = randomDeci({ min: minCoef, max: maxCoef })
     }
 })
 
@@ -56,9 +52,12 @@ const setStyle = (scd: number): CSSProperties => {
 <template>
     <div class="clock-scale">
         <span
-            v-for="(_, scd) in seconds" :key="scd" ref="scale"
+            v-for="(_, scd) in seconds"
+            :key="scd"
+            ref="scale"
             :style="setStyle(scd)"
-            :class="setFiveSecond(scd)" class="clock-scale-one"
+            :class="setFiveSecond(scd)"
+            class="clock-scale-one"
         >
         </span>
     </div>
