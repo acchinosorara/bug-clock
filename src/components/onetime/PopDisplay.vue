@@ -13,19 +13,24 @@ import type { CSSProperties } from 'vue'
 const { pattern } = useOnetimePatternStore()
 const { currentPattern, characters, origin } = useMakeOnetime()
 const onetimePopStore = useOnetimePopStore()
-const { isPopover } = storeToRefs(onetimePopStore)
+const { isPopover, charSize } = storeToRefs(onetimePopStore)
 const { makeButton } = storeToRefs(useMakeButtonStore())
 
 const newCharacters = ref<string[]>([])
 const onetimeClassStates = ref<ClassState[]>([])
 const onetimeStyleStates = ref<CSSProperties[]>([])
 
-watch(isPopover, (val) => {
+watch(isPopover, async (val) => {
     newCharacters.value = []
     onetimeClassStates.value = []
     onetimeStyleStates.value = []
 
     if (val) {
+        await nextTick()
+        if (pop.value) {
+            charSize.value = parseFloat(getComputedStyle(pop.value).fontSize)
+        }
+
         switch (currentPattern.value) {
             case pattern[0]:
                 newCharacters.value = onetimeReverse(characters.value)
