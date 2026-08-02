@@ -38,9 +38,6 @@ const setStyle = (i: number): CSSProperties => {
     z-index: -1;
 
     &.border {
-        &-orange {
-            border-color: $orange;
-        }
         @include border-colors;
     }
 }

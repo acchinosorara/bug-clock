@@ -60,9 +60,6 @@ const setStyle = (): CSSProperties => {
     z-index: -1;
 
     &.bg {
-        &-orange {
-            background-color: $orange;
-        }
         @include bg-colors;
     }
 }
