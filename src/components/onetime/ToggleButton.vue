@@ -19,7 +19,6 @@ const colorClass = ref<string>('')
 
 const popToggle = (): void => {
     clearTimeout(timeout.value)
-    colorClass.value = ''
 
     if (isPopover.value) {
         isPopover.value = false
@@ -27,8 +26,6 @@ const popToggle = (): void => {
     }
 
     isPopover.value = true
-    setColorClass()
-
     timeout.value = setTimeout(() => {
         isPopover.value = false
     }, limit)
@@ -39,6 +36,14 @@ const setColorClass = (): void => {
     index.value = randomInt({ min: 0, max: length })
     colorClass.value = colorClassNames[colorsIndex.value]?.[index.value] ?? ''
 }
+
+watch(isPopover, (val) => {
+    if (val) {
+        setColorClass()
+    } else {
+        colorClass.value = ''
+    }
+})
 </script>
 
 <template>
