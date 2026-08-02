@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { useOnetimePopStore } from '@/stores/onetime/onetimePop'
 import { setCommonClass } from '@/utils/commonClass/setCommonClass'
+import { useOnetimeColorsIndexStore } from '@/stores/onetime/onetimeColorsIndex'
 
-const { randomInt } = random()
 const { limit } = useOnetimePopStore()
-
 const countMax = limit / 1000
 const countVal = ref<number>(countMax)
 let interval: number
@@ -21,10 +20,9 @@ onUnmounted(() => {
 
 const { colorsIndex } = storeToRefs(useColorsIndexStore())
 const { bgClassNames } = setCommonClass()
-const bgLength = bgClassNames.length
-const index = randomInt({ min: 0, max: bgLength })
-const setProgressColor = () => {
-    return bgClassNames[colorsIndex.value]![index]
+const { index } = storeToRefs(useOnetimeColorsIndexStore())
+const setProgressColorClass = (): string => {
+    return bgClassNames[colorsIndex.value]?.[index.value] ?? ''
 }
 </script>
 
@@ -32,7 +30,7 @@ const setProgressColor = () => {
     <progress
         :value="countVal"
         :max="countMax"
-        :class="setProgressColor()"
+        :class="setProgressColorClass()"
         class="progress"
     ></progress>
 </template>

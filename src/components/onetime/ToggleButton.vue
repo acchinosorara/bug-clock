@@ -1,20 +1,43 @@
 <script setup lang="ts">
 import AsteriskIcon from '~icons/my-icons/asterisk'
+import { useOnetimeColorsIndexStore } from '@/stores/onetime/onetimeColorsIndex'
 import { useMakeButtonStore } from '@/stores/onetime/makeButton'
 import { useOnetimePopStore } from '@/stores/onetime/onetimePop'
+import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 
 const onetimePopStore = useOnetimePopStore()
 const { limit } = onetimePopStore
 const { isPopover, timeout } = storeToRefs(onetimePopStore)
 const { makeButton } = storeToRefs(useMakeButtonStore())
 
-const popoverOpen = (): void => {
+// SVGの色
+const { colorClassNames } = setCommonClass()
+const { colorsIndex } = storeToRefs(useColorsIndexStore())
+const { index } = storeToRefs(useOnetimeColorsIndexStore())
+const { randomInt } = random()
+const colorClass = ref<string>('')
+
+const popToggle = (): void => {
     clearTimeout(timeout.value)
-    if (isPopover.value) return
+    colorClass.value = ''
+
+    if (isPopover.value) {
+        isPopover.value = false
+        return
+    }
+
     isPopover.value = true
+    setColorClass()
+
     timeout.value = setTimeout(() => {
         isPopover.value = false
     }, limit)
+}
+
+const setColorClass = (): void => {
+    const length = colorPattern().length
+    index.value = randomInt({ min: 0, max: length })
+    colorClass.value = colorClassNames[colorsIndex.value]?.[index.value] ?? ''
 }
 </script>
 
@@ -22,7 +45,8 @@ const popoverOpen = (): void => {
     <button
         :ref="(el) => (makeButton = el as HTMLButtonElement | null)"
         class="make-btn"
-        @click="isPopover ? (isPopover = false) : popoverOpen()"
+        :class="colorClass"
+        @click="popToggle()"
     >
         <AsteriskIcon />
     </button>
@@ -37,6 +61,10 @@ const popoverOpen = (): void => {
     border: solid 1px $dark300;
     margin-left: auto;
     color: $light;
+
+    &.color {
+        @include text-colors;
+    }
 
     svg {
         width: calc(100% / 3);
