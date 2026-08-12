@@ -13,10 +13,15 @@ import PopDisplay from './PopDisplay.vue'
 <style lang="scss" scoped>
 .make {
     position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
     width: 100%;
+    height: 100%;
     padding: $border-extrabold;
     padding-top: 0;
-    bottom: 0;
+    top: 0;
     left: 0;
+    overflow: hidden;
 }
 </style>
