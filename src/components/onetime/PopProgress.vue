@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useOnetimePopStore } from '@/stores/onetime/onetimePop'
 import { setCommonClass } from '@/utils/commonClass/setCommonClass'
-import { useOnetimeColorsIndexStore } from '@/stores/onetime/onetimeColorsIndex'
 
 const { limit } = useOnetimePopStore()
 const countMax = limit / 1000
@@ -18,11 +17,10 @@ onUnmounted(() => {
     clearInterval(interval)
 })
 
-const { colorsIndex } = storeToRefs(useColorsIndexStore())
+const { colorsIndex, colorIndex } = storeToRefs(useColorsIndexStore())
 const { bgClassNames } = setCommonClass()
-const { index } = storeToRefs(useOnetimeColorsIndexStore())
 const setProgressColorClass = (): string => {
-    return bgClassNames[colorsIndex.value]?.[index.value] ?? ''
+    return bgClassNames[colorsIndex.value]?.[colorIndex.value] ?? ''
 }
 </script>
 
@@ -42,7 +40,7 @@ $progress-height: 4px;
     position: absolute;
     width: calc(100% - $progress-height * 4);
     height: $progress-height;
-    background-color: $dark300;
+    background-color: $dark400;
     border-radius: $progress-height;
     overflow: hidden;
     bottom: calc($progress-height * 2);
@@ -50,7 +48,7 @@ $progress-height: 4px;
     translate: -50% 0;
 
     &::-webkit-progress-bar {
-        background-color: $dark300;
+        background-color: $dark400;
     }
 
     &.bg {
