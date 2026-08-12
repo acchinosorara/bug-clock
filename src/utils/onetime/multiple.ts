@@ -32,12 +32,12 @@ export const onetimeMultiple = (characters: string[]): Multiple => {
     // 複製範囲の文字間を狭める
     const multipleMargin = (): CSSProperties[] | void => {
         if (isTrigger(2)) return
-        const obj = multipleCharacters.map((_, i) =>
+        const styles = multipleCharacters.map((_, i) =>
             i >= targetLength && i <= targetLength + multipliedCharacters.length + 1
                 ? { 'margin-left': `-${randomDeci({ min: 0.1, max: 0.6 })}em` }
                 : {}
         )
-        return obj
+        return styles
     }
 
     return {
