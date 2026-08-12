@@ -4,20 +4,27 @@ import type { ClassState } from '@/types/ClassState'
 
 export const onetimeClass = (characters: string[], currentPattern: string | null): ClassState[] => {
     const { randomInt } = random()
-    const { pattern } = useOnetimePatternStore()
+    const onetimePatternStore = useOnetimePatternStore()
+    const { pattern } = onetimePatternStore
+    const { isEffectIndex } = storeToRefs(onetimePatternStore)
     const { invertClassNames } = setCommonClass()
 
-    const className = (): string => {
-        let key = currentPattern as string
-        if (currentPattern === pattern[0]) {
-            const length = invertClassNames.length
-            const index = randomInt({ min: 0, max: length })
-            key = invertClassNames[index]!
-        }
-        return key
-    }
+    const classStates: ClassState[] = []
 
-    return characters.map(() => ({
-        [className()]: isTrigger(3)
-    }))
+    characters.forEach((_, i) => {
+        switch (currentPattern) {
+            case pattern[0]: {
+                const index = randomInt({ min: 0, max: invertClassNames.length })
+                classStates.push({ [invertClassNames[index]!]: isTrigger(3) })
+                break
+            }
+            case pattern[2]:
+                classStates.push({ [pattern[2]!]: isEffectIndex.value[i] ?? false })
+                break
+            default:
+                classStates.push({ [currentPattern as string]: isTrigger(3) })
+        }
+    })
+
+    return classStates
 }
