@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@vueuse/core": "^14.2.0",
+        "motion-v": "^2.3.0",
         "pinia": "^3.0.4",
         "sass": "^1.97.3",
         "unplugin-auto-import": "^21.0.0",
