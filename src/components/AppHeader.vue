@@ -10,10 +10,13 @@ import Reload from './header/ReloadButton.vue'
 
 <style lang="scss" scoped>
 .header {
-    position: absolute;
+    @include flex-between;
+    position: fixed;
     width: 100%;
-    padding: $border-extrabold;
+    height: var(--header-height);
+    padding: 0 $border-extrabold;
     top: 0;
     left: 0;
+    z-index: 9999;
 }
 </style>
