@@ -19,7 +19,7 @@ const { clockKey } = storeToRefs(useClockKeyStore())
 .container {
     @include flex-center;
     min-height: 100svh;
-    padding: $side;
+    padding: var(--header-height) $side;
     overflow: hidden;
 }
 </style>
