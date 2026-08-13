@@ -3,6 +3,7 @@
 
 :root {
     --border-base: 4px;
+    --header-height: 72px;
 
     @include mq {
         --border-base: 3px;
