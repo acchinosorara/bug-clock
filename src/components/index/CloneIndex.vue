@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useStrongEffect } from '@/composables/strongEffect'
+import { useUpdateInterval } from '@/composables/updateInterval'
 import type { CSSProperties } from 'vue'
 
+const { countMax } = useAnimationValStore()
 const { randomInt, randomDeci } = random()
 const { width: windowWidth, height: windowHeight } = useWindowSize()
 
@@ -12,7 +15,6 @@ const cloneTarget = ref<number>(0)
 const cloneRefs = useTemplateRef('cloneRef')
 
 // タイマーのカウント
-const parentCount = ref<number>(0)
 const childCount = ref<number>(0)
 
 // 文字間隔を出力
@@ -109,47 +111,43 @@ watch(
     }
 )
 
-const setClone = (): void => {
-    clearInterval(parentInterval.value)
-    isClone.value = true
+const blinkInterval = ref<number>()
 
-    // 複製文字を1つ指定
-    cloneTarget.value = setIndex(randomInt({ min: 0, max: hour }))
-    setGap()
-    setTranslate()
-    childInterval.value = setInterval(() => {
+// 複製処理
+const { isActive, endEffect } = useStrongEffect('cloneIndex')
+useUpdateInterval({
+    delay: 250,
+    countMax,
+    tick: () => {
+        if (!isActive.value) return
+
+        // 複製開始
+        if (!isClone.value) {
+            isClone.value = true
+
+            // 複製文字を1つ指定
+            cloneTarget.value = setIndex(randomInt({ min: 0, max: hour }))
+            setGap()
+            setTranslate()
+            isCharSize.value = false
+            return
+        }
+
         // 複製を重ねるごとに終了確率を上げる
         const probability = randomInt({ min: 0, max: 400 })
 
         // 複製終了
         if (probability < childCount.value || isOverflow()) {
-            clearInterval(childInterval.value)
             clearInterval(blinkInterval.value)
             childCount.value = 0
             isClone.value = false
-            parentInterval.value = setInterval(handleClone, 1000)
+            endEffect()
             return
         }
         childCount.value++
         blink()
-    }, 250)
-    isCharSize.value = false
-}
-
-// 複製処理
-const handleClone = (): void => {
-    if (parentCount.value >= 10) {
-        clearInterval(parentInterval.value)
-        parentCount.value = 0
-        parentInterval.value = setInterval(handleClone, 1000)
     }
-    parentCount.value++
-    if (isTrigger(2)) setClone()
-}
-
-const parentInterval = ref<number>(setInterval(handleClone, 2000))
-const childInterval = ref<number>()
-const blinkInterval = ref<number>()
+})
 
 const { clockSizeSub } = storeToRefs(useClockSizeStore())
 const scaleStore = useScaleHeightStore()
