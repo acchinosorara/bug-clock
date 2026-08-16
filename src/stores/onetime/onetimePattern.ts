@@ -1,5 +1,5 @@
 export const useOnetimePatternStore = defineStore('onetimePattern', () => {
-    const pattern = ['reverse', 'spacing', 'slash']
+    const pattern = ['reverse', 'spacing', 'slash', 'tag']
     const patternLength = pattern.length
     const currentPattern = ref<string | null>(null)
     const isEffectIndex = ref<boolean[]>([])

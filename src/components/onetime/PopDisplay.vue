@@ -9,6 +9,7 @@ import { useMakeOnetime } from '@/composables/makeOnetime'
 import { onetimeReverse } from '@/utils/onetime/reverse'
 import { onetimeMultiple } from '@/utils/onetime/multiple'
 import { onetimeSlash } from '@/utils/onetime/slash.ts'
+import { onetimeTag } from '@/utils/onetime/tag.ts'
 import { onetimeClass } from '@/utils/onetime/onetimeClass'
 import type { ClassState } from '@/types/ClassState'
 import type { CSSProperties } from 'vue'
@@ -74,6 +75,14 @@ watch(isPopover, async (val) => {
                 charStyleStates.value = slashHeight()
                 animateStates.value = slashAnimate()
                 transitionState.value = slashTransition()
+                break
+
+            // タグの誤表示
+            case pattern[3]:
+                newCharacters.value = onetimeTag(characters.value)
+                timeStyleState.value = {
+                    justifyContent: 'flex-end'
+                }
                 break
 
             // 通常
