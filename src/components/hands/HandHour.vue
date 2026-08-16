@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useVibrate } from '@/composables/vibrate'
+import { useLongHands } from '@/composables/longHands'
 import type { CSSProperties } from 'vue'
 
 const { now } = storeToRefs(useNowStore())
@@ -11,10 +12,12 @@ const angle = computed<CSSProperties>(() => {
         rotate: `${hour.value * 30 + vibrateVal.value}deg`
     }
 })
+
+const longStyle = useLongHands()
 </script>
 
 <template>
-    <span class="hour" :style="angle"></span>
+    <span class="hour" :style="[angle, longStyle]"></span>
 </template>
 
 <style lang="scss" scoped>
