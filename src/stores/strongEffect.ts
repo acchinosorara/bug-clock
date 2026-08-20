@@ -1,4 +1,4 @@
-export const strongEffects = ['longHands', 'cloneIndex', 'noiseLarge'] as const
+export const strongEffects = ['longHands', 'cloneHands', 'cloneIndex', 'noiseLarge'] as const
 export type StrongEffectName = (typeof strongEffects)[number]
 
 export const useStrongEffectStore = defineStore('strongEffect', () => {

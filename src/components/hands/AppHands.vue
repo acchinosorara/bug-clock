@@ -2,6 +2,7 @@
 import Hour from './HandHour.vue'
 import Minute from './HandMinute.vue'
 import Second from './HandSecond.vue'
+import CloneHands from './CloneHands.vue'
 </script>
 
 <template>
@@ -10,6 +11,7 @@ import Second from './HandSecond.vue'
         <Hour />
         <Minute />
         <Second />
+        <CloneHands />
     </div>
 </template>
 
