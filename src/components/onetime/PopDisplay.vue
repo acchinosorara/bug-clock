@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { motion } from 'motion-v'
+import { motion, AnimatePresence, easeOut } from 'motion-v'
 import CopyButton from './CopyButton.vue'
 import PopProgress from './PopProgress.vue'
 import { useMakeButtonStore } from '@/stores/onetime/makeButton'
@@ -12,15 +12,17 @@ import { onetimeSlash } from '@/utils/onetime/slash.ts'
 import { onetimeTag } from '@/utils/onetime/tag.ts'
 import { onetimeClass } from '@/utils/onetime/onetimeClass'
 import type { ClassState } from '@/types/ClassState'
-import type { CSSProperties } from 'vue'
+import type { CSSProperties, ComponentPublicInstance } from 'vue'
 import type { VariantType, Transition } from 'motion-v'
+import { onetimeError } from '@/utils/onetime/error.ts'
 
+const { duration } = useAnimationValStore()
 const onetimePatternStore = useOnetimePatternStore()
 const { pattern } = onetimePatternStore
 const { isEffectIndex } = storeToRefs(onetimePatternStore)
 const { currentPattern, characters, origin } = useMakeOnetime()
 const onetimePopStore = useOnetimePopStore()
-const { isPopover, isCopied, charSize } = storeToRefs(onetimePopStore)
+const { isPopover, isCopied } = storeToRefs(onetimePopStore)
 const { makeButton } = storeToRefs(useMakeButtonStore())
 
 const newCharacters = ref<string[]>([])
@@ -30,21 +32,21 @@ const charStyleStates = ref<(CSSProperties | undefined)[]>([])
 const animateStates = ref<(VariantType | undefined)[]>([])
 const transitionState = ref<Transition>({})
 
+const pop = useTemplateRef<ComponentPublicInstance>('pop')
+const popElement = computed<HTMLElement | null>(() => (pop.value?.$el as HTMLElement) ?? null)
+
 watch(isPopover, async (val) => {
-    newCharacters.value = []
-    timeStyleState.value = {}
-    charClassStates.value = []
-    charStyleStates.value = []
-    animateStates.value = []
-    transitionState.value = {}
-    isEffectIndex.value = []
-
     if (val) {
-        await nextTick()
-        if (pop.value) {
-            charSize.value = parseFloat(getComputedStyle(pop.value).fontSize)
-        }
+        isCopied.value = false
+        newCharacters.value = []
+        timeStyleState.value = {}
+        charClassStates.value = []
+        charStyleStates.value = []
+        animateStates.value = []
+        transitionState.value = {}
+        isEffectIndex.value = []
 
+        await nextTick()
         switch (currentPattern.value) {
             // 反転
             case pattern[0]:
@@ -85,6 +87,11 @@ watch(isPopover, async (val) => {
                 }
                 break
 
+            // エラー
+            case pattern[4]:
+                newCharacters.value = onetimeError()
+                break
+
             // 通常
             default:
                 newCharacters.value = characters.value
@@ -94,33 +101,42 @@ watch(isPopover, async (val) => {
     }
 })
 
-const pop = useTemplateRef('pop')
 onMounted(() => {
-    onClickOutside(pop, () => (isPopover.value = false), {
+    onClickOutside(popElement, () => (isPopover.value = false), {
         ignore: [makeButton]
     })
 })
 </script>
 
 <template>
-    <div v-if="isPopover" ref="pop" class="pop">
-        <time :datetime="origin" class="pop-today" :style="timeStyleState">
-            <motion.span
-                v-show="!isCopied"
-                v-for="(char, i) in newCharacters"
-                :key="char"
-                :class="charClassStates[i]"
-                class="pop-today-char"
-                :style="charStyleStates[i]"
-                :animate="animateStates[i]"
-                :transition="transitionState"
-            >
-                {{ char }}
-            </motion.span>
-            <CopyButton />
-        </time>
-        <PopProgress />
-    </div>
+    <AnimatePresence>
+        <motion.div
+            v-if="isPopover"
+            ref="pop"
+            class="pop"
+            :initial="{ opacity: 0, scale: 0.9 }"
+            :animate="{ opacity: 1, scale: 1 }"
+            :exit="{ opacity: 0, scale: 1 }"
+            :transition="{ duration: duration, ease: easeOut }"
+        >
+            <time :datetime="origin" class="pop-today" :style="timeStyleState">
+                <motion.span
+                    v-show="!isCopied"
+                    v-for="(char, i) in newCharacters"
+                    :key="char"
+                    :class="charClassStates[i]"
+                    class="pop-today-char"
+                    :style="charStyleStates[i]"
+                    :animate="animateStates[i]"
+                    :transition="transitionState"
+                >
+                    {{ char }}
+                </motion.span>
+                <CopyButton />
+            </time>
+            <PopProgress />
+        </motion.div>
+    </AnimatePresence>
 </template>
 
 <style lang="scss" scoped>
