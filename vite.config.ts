@@ -9,21 +9,23 @@ import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 // https://vite.dev/config/
 export default defineConfig({
     server: {
-        host: true
+        host: true,
+        port: 3000
     },
     plugins: [
         vue(),
         AutoImport({
-            imports: ['vue', '@vueuse/core', 'pinia'],
+            imports: ['vue', 'vue-router', '@vueuse/core', 'pinia'],
             dirs: ['./src/utils', './src/stores'],
             dts: 'auto-imports.d.ts'
         }),
         Unfonts({
             google: {
-                families: ['Google Sans Code']
+                families: ['Noto Sans JP', 'Google Sans Code']
             }
         }),
         Icons({
+            compiler: 'vue3',
             customCollections: {
                 'my-icons': FileSystemIconLoader('./src/assets/icons')
             }
