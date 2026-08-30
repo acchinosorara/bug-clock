@@ -2,25 +2,35 @@ interface IntervalOptions {
     delay: number
     countMax: number
     tick: () => void
+    immediate?: boolean
 }
 
 export const useUpdateInterval = (options: IntervalOptions): void => {
-    const { delay, countMax, tick } = options
+    const { delay, countMax, tick, immediate = false } = options
     const count = ref<number>(0)
-    let interval: number
+    let interval: number | undefined
+
+    const stop = (): void => {
+        clearInterval(interval)
+        interval = undefined
+    }
 
     const run = (): void => {
+        stop()
         interval = setInterval(() => {
             count.value++
             tick()
             if (count.value >= countMax) reset()
         }, delay)
     }
-    onMounted(run)
 
+    // 一定周期でリセット＋再実行
     const reset = (): void => {
         count.value = 0
-        clearInterval(interval)
         run()
     }
+
+    if (immediate) run()
+    else onMounted(run)
+    onScopeDispose(stop)
 }

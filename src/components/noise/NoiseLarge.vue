@@ -43,6 +43,16 @@ const setMaskImage = (): string => {
 }
 
 const { isActive, endEffect } = useStrongEffect('noiseLarge')
+
+// エフェクト終了でノイズを削除
+const resetNoise = (): void => {
+    count.value = 0
+    noiseIndex.value = 0
+}
+watch(isActive, (val) => {
+    if (!val) resetNoise()
+})
+
 useUpdateInterval({
     delay: 1000,
     countMax,
@@ -51,8 +61,7 @@ useUpdateInterval({
 
         // ノイズ終了
         if (count.value >= 6) {
-            count.value = 0
-            noiseIndex.value = 0
+            resetNoise()
             endEffect()
             return
         }

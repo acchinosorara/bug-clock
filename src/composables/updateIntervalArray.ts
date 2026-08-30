@@ -3,32 +3,43 @@ interface IntervalOptions {
     countMax: number
     length: number
     tick: (index: number) => void
+    immediate?: boolean
 }
 
 export const useUpdateIntervalArray = (options: IntervalOptions): void => {
-    const { delay, countMax, length, tick } = options
-    const intervals = setArray<number>(length, 0)
+    const { delay, countMax, length, tick, immediate = false } = options
+    const intervals = setArray<number | undefined>(length, undefined)
     const counts = ref<number[]>(setArray<number>(length, 0))
 
-    const interval = (i: number): void => {
+    const stop = (i: number): void => {
+        clearInterval(intervals[i])
+        intervals[i] = undefined
+    }
+
+    const run = (i: number): void => {
+        stop(i)
         intervals[i] = setInterval(() => {
             counts.value[i] = (counts.value[i] ?? 0) + 1
             tick(i)
-            const count = counts.value.at(i)
-            if (count && count > countMax) {
-                reset(i)
-                interval(i)
-            }
+            if ((counts.value[i] ?? 0) >= countMax) reset(i)
         }, delay)
     }
 
-    const startAll = (): void => {
-        for (let i = 0; i < length; i++) interval(i)
-    }
-    onMounted(startAll)
-
+    // 一定周期でリセット＋再実行
     const reset = (i: number): void => {
-        clearInterval(intervals[i])
         counts.value[i] = 0
+        run(i)
     }
+
+    const startAll = (): void => {
+        for (let i = 0; i < length; i++) run(i)
+    }
+
+    const stopAll = (): void => {
+        for (let i = 0; i < length; i++) stop(i)
+    }
+
+    if (immediate) startAll()
+    else onMounted(startAll)
+    onScopeDispose(stopAll)
 }

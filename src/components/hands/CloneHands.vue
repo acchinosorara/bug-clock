@@ -78,6 +78,17 @@ const setClass = (i: number): string => {
 
 // 複製処理
 const { isActive, endEffect } = useStrongEffect('cloneHands')
+
+// エフェクト終了で複製体を削除
+const resetClone = (): void => {
+    count.value = 0
+    colorIndexes.value = []
+    isClone.value = false
+}
+watch(isActive, (val) => {
+    if (!val) resetClone()
+})
+
 useUpdateInterval({
     delay: 250,
     countMax,
@@ -94,9 +105,7 @@ useUpdateInterval({
 
         // 複製終了
         if (isOverflow()) {
-            count.value = 0
-            colorIndexes.value = []
-            isClone.value = false
+            resetClone()
             endEffect()
             return
         }

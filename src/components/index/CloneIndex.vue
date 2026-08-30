@@ -13,8 +13,6 @@ const setIndex = (i: number): number => (i === 0 ? 12 : i)
 const isClone = ref<boolean>(false)
 const cloneTarget = ref<number>(0)
 const cloneRefs = useTemplateRef('cloneRef')
-
-// タイマーのカウント
 const childCount = ref<number>(0)
 
 // 文字間隔を出力
@@ -115,6 +113,17 @@ const blinkInterval = ref<number>()
 
 // 複製処理
 const { isActive, endEffect } = useStrongEffect('cloneIndex')
+
+// エフェクト終了で複製体を削除
+const resetClone = (): void => {
+    clearInterval(blinkInterval.value)
+    childCount.value = 0
+    isClone.value = false
+}
+watch(isActive, (val) => {
+    if (!val) resetClone()
+})
+
 useUpdateInterval({
     delay: 250,
     countMax,
@@ -125,7 +134,7 @@ useUpdateInterval({
         if (!isClone.value) {
             isClone.value = true
 
-            // 複製文字を1つ指定
+            // 複製文字を1つ選定
             cloneTarget.value = setIndex(randomInt({ min: 0, max: hour }))
             setGap()
             setTranslate()
@@ -138,9 +147,7 @@ useUpdateInterval({
 
         // 複製終了
         if (probability < childCount.value || isOverflow()) {
-            clearInterval(blinkInterval.value)
-            childCount.value = 0
-            isClone.value = false
+            resetClone()
             endEffect()
             return
         }
