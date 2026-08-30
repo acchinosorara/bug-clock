@@ -177,7 +177,7 @@ const childStyle = (i: number): CSSProperties => {
 
 <template>
     <div class="index">
-        <div v-if="isClone" :style="parentStyle(cloneTarget)" class="index-text">
+        <div v-if="isClone" :style="parentStyle(cloneTarget)" class="index-text mono">
             <span
                 v-for="(_, i) in childCount"
                 :key="i"

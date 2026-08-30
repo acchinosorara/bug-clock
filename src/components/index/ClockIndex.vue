@@ -118,7 +118,7 @@ const setTextStyle = (i: number): CSSProperties => {
             :key="i"
             :style="setTextStyle(i)"
             :class="setTextClass(i)"
-            class="index-text"
+            class="index-text mono"
         >
             <span
                 v-for="(char, index) in indexRefs[i]"
