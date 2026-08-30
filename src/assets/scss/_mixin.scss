@@ -14,6 +14,21 @@
     }
 }
 
+@mixin mono {
+    font-family: 'Google Sans Code', monospace;
+}
+
+@mixin wrap {
+    min-height: 100svh;
+    padding: var(--header-height) $inline;
+    overflow: hidden;
+}
+
+@mixin sec-size {
+    width: min(100%, 800px);
+    margin-inline: auto;
+}
+
 @mixin flex-center {
     display: flex;
     justify-content: center;
