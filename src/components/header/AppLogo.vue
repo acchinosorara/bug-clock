@@ -64,10 +64,18 @@ const setLogoClass = computed<string[]>(() => {
 
         &:nth-child(1) {
             translate: -2px 0;
+
+            @include mq {
+                translate: -1px 0;
+            }
         }
 
         &:nth-child(2) {
             translate: 2px 0;
+
+            @include mq {
+                translate: 1px 0;
+            }
         }
 
         &:last-child {
