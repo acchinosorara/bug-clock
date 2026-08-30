@@ -1,6 +1,7 @@
 $light: #f0f0f0;
 $light200: #cccccc;
 $light300: #a0a0a0;
+$light400: #646464;
 $dark100: #181818;
 $dark200: #242424;
 $dark300: #343434;
@@ -24,8 +25,10 @@ $border-semibold: calc(var(--border-base) * 3);
 $border-bold: calc(var(--border-base) * 4);
 $border-extrabold: calc(var(--border-base) * 5);
 
-$side: $border-extrabold;
-$index-size: clamp(0.75rem, 10vw, 1rem);
-$scale-height: 0.3rem;
-$make-button-size: 56px;
+$inline: clamp(1.25rem, 2vw, 3rem);
+$block: 1.5rem;
+$index-size: 2.75rem;
+$scale-height: 0.9rem;
+$make-button-size: 3.5rem;
 $duration: 0.2s;
+$delay: 0.2s;
