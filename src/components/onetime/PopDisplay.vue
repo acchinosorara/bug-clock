@@ -10,11 +10,11 @@ import { onetimeReverse } from '@/utils/onetime/reverse'
 import { onetimeMultiple } from '@/utils/onetime/multiple'
 import { onetimeSlash } from '@/utils/onetime/slash.ts'
 import { onetimeTag } from '@/utils/onetime/tag.ts'
+import { onetimeError } from '@/utils/onetime/error.ts'
 import { onetimeClass } from '@/utils/onetime/onetimeClass'
 import type { ClassState } from '@/types/ClassState'
 import type { CSSProperties, ComponentPublicInstance } from 'vue'
 import type { VariantType, Transition } from 'motion-v'
-import { onetimeError } from '@/utils/onetime/error.ts'
 
 const { duration } = useAnimationValStore()
 const onetimePatternStore = useOnetimePatternStore()
@@ -22,7 +22,7 @@ const { pattern } = onetimePatternStore
 const { isEffectIndex } = storeToRefs(onetimePatternStore)
 const { currentPattern, characters, origin } = useMakeOnetime()
 const onetimePopStore = useOnetimePopStore()
-const { isPopover, isCopied } = storeToRefs(onetimePopStore)
+const { isPopover, isCopied, charSize } = storeToRefs(onetimePopStore)
 const { makeButton } = storeToRefs(useMakeButtonStore())
 
 const newCharacters = ref<string[]>([])
@@ -47,6 +47,9 @@ watch(isPopover, async (val) => {
         isEffectIndex.value = []
 
         await nextTick()
+        if (pop.value) {
+            charSize.value = parseFloat(getComputedStyle(popElement.value as HTMLElement).fontSize)
+        }
         switch (currentPattern.value) {
             // 反転
             case pattern[0]:
@@ -113,7 +116,7 @@ onMounted(() => {
         <motion.div
             v-if="isPopover"
             ref="pop"
-            class="pop"
+            class="pop mono"
             :initial="{ opacity: 0, scale: 0.9 }"
             :animate="{ opacity: 1, scale: 1 }"
             :exit="{ opacity: 0, scale: 1 }"
@@ -146,15 +149,15 @@ onMounted(() => {
     justify-content: center;
     position: absolute;
     color: $light;
-    font-size: 0.5rem;
-    width: 12em;
-    height: 4em;
+    font-size: 1.25rem;
+    width: 11em;
+    height: 5em;
     background-color: $dark200;
-    padding: 0 calc($side * 2) 4px;
+    padding: 0 1.5em 4px;
     border: solid 1px $dark400;
     border-radius: 4px;
-    bottom: calc($make-button-size + $border-extrabold);
-    right: $side;
+    bottom: calc($make-button-size + $block);
+    right: $inline;
     translate: 0 -8px;
 
     &-today {
