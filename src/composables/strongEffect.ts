@@ -18,7 +18,7 @@ export const useStrongEffect = (name: StrongEffectName): StrongEffect => {
         hasTrigger = true
 
         useUpdateInterval({
-            delay: 4000,
+            delay: 6000,
             countMax: 10,
             tick: () => {
                 if (activeEffect.value !== null || isTrigger(2)) return
