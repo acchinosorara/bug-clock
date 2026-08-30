@@ -7,7 +7,8 @@ import Icons from 'unplugin-icons/vite'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+    base: command === 'build' ? '/bug-clock/' : '/',
     server: {
         host: true,
         port: 3000
@@ -46,4 +47,4 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
     }
-})
+}))
