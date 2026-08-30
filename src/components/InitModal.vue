@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { motion, AnimatePresence, easeOut } from 'motion-v'
 import Warning from '~icons/my-icons/warning'
-import ArwNext from '~icons/my-icons/arw'
+import Arw from '~icons/my-icons/arw'
+import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import type { ComponentPublicInstance } from 'vue'
 
 const { duration } = useAnimationValStore()
@@ -54,6 +55,12 @@ const setHeading = (): string => {
     }
     return text.value.join('')
 }
+
+const { bgClassNames } = setCommonClass()
+const { colorsIndex, colorIndex } = storeToRefs(useColorsIndexStore())
+const viewColorClass = computed<string>(
+    () => bgClassNames[colorsIndex.value]?.[colorIndex.value] ?? ''
+)
 </script>
 
 <template>
@@ -83,13 +90,15 @@ const setHeading = (): string => {
                     <p>{{ setHeading() }}</p>
                 </h2>
                 <p class="modal-desc">
-                    このサイトは、バグった時計が表示されます。<br />
+                    当サイトは、バグった時計が表示されます。<br />
                     バグが苦手な方、体調の優れない方は、<br />
                     閲覧を控えることをおすすめします。
                 </p>
-                <button @click="hideModal()" class="modal-btn view">
+                <button @click="hideModal()" :class="viewColorClass" class="modal-btn view">
                     <span>閲覧する</span>
-                    <ArwNext />
+                    <span class="modal-btn-ic">
+                        <Arw />
+                    </span>
                 </button>
                 <button v-if="isReferrer" @click="back" class="modal-btn back">
                     <span>やめる</span>
@@ -135,7 +144,7 @@ const setHeading = (): string => {
         @include flex-center;
         width: calc(100% - $inline * 2);
         margin-inline: auto;
-        padding: calc($inline * 2) $inline;
+        padding: calc($inline * 2) calc($inline / 2);
         flex-direction: column;
     }
 
@@ -172,23 +181,59 @@ const setHeading = (): string => {
             color: $dark200;
             font-weight: bold;
             background-color: $light;
+            transition: color $duration ease-out;
 
-            svg {
-                right: 1.5em;
+            &.bg {
+                @each $name, $value in $colors {
+                    &-#{$name} {
+                        @include hover {
+                            color: $value;
+
+                            .modal-btn-ic::before {
+                                scale: 1.3;
+                                background-color: $value;
+                            }
+                        }
+                    }
+                }
             }
         }
 
         &.back {
+            color: $light300;
             background-color: $dark300;
             margin-top: 0.5em;
+            transition: color $duration ease-out;
+
+            @include hover {
+                color: $light;
+            }
         }
 
-        svg {
+        &-ic {
+            @include flex-center;
             position: absolute;
-            width: 0.75em;
-            height: auto;
+            height: calc(100% - 1.5em);
+            aspect-ratio: 1 / 1;
+            color: $light;
             top: 50%;
+            right: 0.75em;
             translate: 0 -50%;
+
+            &::before {
+                @include center;
+                @include circle;
+                content: '';
+                width: 100%;
+                background-color: $dark200;
+                z-index: -1;
+                transition: all $duration ease-out;
+            }
+
+            svg {
+                width: 0.6em;
+                height: auto;
+            }
         }
     }
 }
