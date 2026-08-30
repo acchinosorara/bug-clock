@@ -82,7 +82,13 @@ meter {
 
 :where(dialog:modal) {
   all: revert;
-  box-sizing: border-box;
+  width: unset;
+  max-width: unset;
+  padding: unset;
+  color: unset;
+  background-color: unset;
+  border: unset;
+  overflow: unset;
 }
 
 ::-webkit-details-marker {
@@ -91,7 +97,7 @@ meter {
 
 :root {
   --border-base: 4px;
-  --header-height: 72px;
+  --header-height: 4.5rem;
 }
 @media screen and (max-width: 480px) {
   :root {
@@ -106,20 +112,32 @@ meter {
 }
 
 html {
-  font-size: 48px;
+  font-size: 16px;
 }
 @media screen and (max-width: 480px) {
   html {
-    font-size: 36px;
+    font-size: 14px;
   }
 }
 
 body {
-  font-family: "Google Sans Code", monospace;
+  font-family: "Noto Sans JP", sans-serif;
+  letter-spacing: 0.025em;
+  line-height: 1.6;
   margin: 0;
   background-color: #181818;
 }
 
+.mono {
+  font-family: "Google Sans Code", monospace;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
 #app {
   position: relative;
+}
+
+:has(dialog[open]) {
+  overflow: hidden;
 }/*# sourceMappingURL=style.css.map */
