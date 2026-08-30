@@ -82,7 +82,13 @@ meter {
 
 :where(dialog:modal) {
     all: revert;
-    box-sizing: border-box;
+    width: unset;
+    max-width: unset;
+    padding: unset;
+    color: unset;
+    background-color: unset;
+    border: unset;
+    overflow: unset;
 }
 
 ::-webkit-details-marker {
