@@ -150,7 +150,7 @@ onMounted(() => {
     position: absolute;
     color: $light;
     font-size: 1.25rem;
-    width: 11em;
+    width: 12em;
     height: 5em;
     background-color: $dark200;
     padding: 0 1.5em 4px;
@@ -159,6 +159,7 @@ onMounted(() => {
     bottom: calc($make-button-size + $block);
     right: $inline;
     translate: 0 -8px;
+    z-index: 10;
 
     &-today {
         @include flex-center;

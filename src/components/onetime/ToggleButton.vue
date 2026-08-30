@@ -83,6 +83,7 @@ watch(isPopover, (val) => {
     border: solid 1px $dark400;
     color: $light;
     transition: all $duration;
+    z-index: 20;
 
     &.color {
         @include text-colors;
