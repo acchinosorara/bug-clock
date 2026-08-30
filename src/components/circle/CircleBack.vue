@@ -56,7 +56,7 @@ const setStyle = (): CSSProperties => {
     @include center;
     @include circle;
     width: calc(100% + $border-semibold);
-    opacity: 0.05;
+    opacity: 0.025;
     z-index: -1;
 
     &.bg {
