@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import Reload from './header/ReloadButton.vue'
+import Logo from './header/AppLogo.vue'
+import Navigation from './header/NavigationItems.vue'
+const { initStyle } = useViewStore()
 </script>
 
 <template>
-    <header class="header">
-        <Reload />
+    <header class="header" :style="initStyle()">
+        <Logo />
+        <Navigation />
     </header>
 </template>
 
@@ -14,7 +17,7 @@ import Reload from './header/ReloadButton.vue'
     position: fixed;
     width: 100%;
     height: var(--header-height);
-    padding: 0 $border-extrabold;
+    padding: 0 $inline;
     top: 0;
     left: 0;
     z-index: 9999;
