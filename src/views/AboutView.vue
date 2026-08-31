@@ -20,8 +20,8 @@ import Dot from '~icons/my-icons/list-dot'
                 <li>
                     <div>
                         <p class="sec-text">
-                            以下のいずれかに該当する場合、閲覧により心身に不調をきたす場合があります。<br />
-                            ご不安な場合は、閲覧を控えることをおすすめします。
+                            開発上、配慮はしておりますが、やや刺激の強いサイトとなっています。<br />
+                            そのため、以下のいずれかに該当する場合は、閲覧を控えるか、ちょこっと覗く程度に閲覧することをおすすめします。
                         </p>
                         <ul class="sec-cont-ul">
                             <li class="item">
@@ -38,7 +38,7 @@ import Dot from '~icons/my-icons/list-dot'
                             </li>
                             <li class="item">
                                 <Dot />
-                                視覚刺激により心身に不調をきたした経験などがある方
+                                視覚刺激により、心身に不調をきたした経験などがある方
                             </li>
                         </ul>
                     </div>
