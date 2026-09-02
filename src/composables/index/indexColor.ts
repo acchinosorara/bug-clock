@@ -1,4 +1,3 @@
-import { classStateObject } from '@/utils/commonClass/classStateObject'
 import type { ClassState } from '@/types/ClassState'
 
 export const useIndexColor = (structure: string[][], classNames: Ref<string[]>) => {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import { useUpdateIntervalArray } from '@/composables/updateIntervalArray'
 import { useIndexInvert } from '@/composables/index/indexInvert'
 import { useIndexBackground } from '@/composables/index/indexBackground'
@@ -68,8 +67,8 @@ const setCharClass = (i: number, index: number): ClassState[] | void => {
 }
 
 const setCharacter = (i: number): void => {
-    indexRefs.value[i]?.forEach((_, index) => {
-        const defaultChar = indexDefaults.at(i)?.at(index)
+    indexRefs.value[i]?.forEach((_, j) => {
+        const defaultChar = indexDefaults.at(i)?.at(j)
         const list = garbledCharacters.at(Number(defaultChar))
         const garbledChar = indexRefs.value.at(i)
         if (!defaultChar || !list || !garbledChar) return
@@ -77,10 +76,10 @@ const setCharacter = (i: number): void => {
         // 文字化け or 元の数字を保持
         const charLength = randomInt({ min: 0, max: list.length + 1 })
         const randomChar = list.at(charLength)
-        garbledChar[index] = randomChar || defaultChar
+        garbledChar[j] = randomChar || defaultChar
 
-        setColor(i, index)
-        setInvert(i, index)
+        setColor(i, j)
+        setInvert(i, j)
     })
 }
 

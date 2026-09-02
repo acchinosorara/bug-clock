@@ -2,8 +2,6 @@
 import CopyIcon from '~icons/my-icons/copy'
 import CheckIcon from '~icons/my-icons/check'
 import { useMakeOnetime } from '@/composables/makeOnetime'
-import { useOnetimePopStore } from '@/stores/onetime/onetimePop'
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 
 const { bgClassNames } = setCommonClass()
 const { colorsIndex, colorIndex } = storeToRefs(useColorsIndexStore())

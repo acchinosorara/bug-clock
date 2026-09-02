@@ -1,5 +1,3 @@
-import { useOnetimePatternStore } from '@/stores/onetime/onetimePattern'
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import type { ClassState } from '@/types/ClassState'
 
 export const onetimeClass = (characters: string[], currentPattern: string | null): ClassState[] => {

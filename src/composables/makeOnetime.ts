@@ -1,6 +1,3 @@
-import { useOnetimePatternStore } from '@/stores/onetime/onetimePattern'
-import { useOnetimePopStore } from '@/stores/onetime/onetimePop'
-
 interface OnetimePattern {
     currentPattern: Ref<string | null>
     characters: Ref<string[]>

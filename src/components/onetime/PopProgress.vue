@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { useOnetimePopStore } from '@/stores/onetime/onetimePop'
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
-
 const { limit } = useOnetimePopStore()
 const countMax = limit / 1000
 const countVal = ref<number>(countMax)

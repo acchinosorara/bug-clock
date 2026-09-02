@@ -2,7 +2,6 @@
 import { motion, AnimatePresence, easeOut } from 'motion-v'
 import Warning from '~icons/my-icons/warning'
 import Arw from '~icons/my-icons/arw'
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import type { ComponentPublicInstance } from 'vue'
 
 const { duration } = useAnimationValStore()

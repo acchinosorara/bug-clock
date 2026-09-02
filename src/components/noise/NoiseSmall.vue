@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import { useUpdateInterval } from '@/composables/updateInterval'
 import type { CSSProperties } from 'vue'
 

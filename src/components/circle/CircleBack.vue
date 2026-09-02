@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useUpdateInterval } from '@/composables/updateInterval'
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import type { CSSProperties } from 'vue'
 
 const { delay, countMax } = useAnimationValStore()

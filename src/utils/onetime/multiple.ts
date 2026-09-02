@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'vue'
-import { useOnetimePopStore } from '@/stores/onetime/onetimePop'
 
 interface Multiple {
     multipleCharacters: string[]

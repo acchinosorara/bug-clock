@@ -1,5 +1,4 @@
 import { useUpdateInterval } from '@/composables/updateInterval'
-import { setCommonClass, type BorderClassNames } from '@/utils/commonClass/setCommonClass'
 
 type GlitchColor = BorderClassNames[number] | ''
 interface GlitchOptions {

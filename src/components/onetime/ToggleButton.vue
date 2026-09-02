@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { motion } from 'motion-v'
 import AsteriskIcon from '~icons/my-icons/asterisk'
-import { useMakeButtonStore } from '@/stores/onetime/makeButton'
-import { useOnetimePopStore } from '@/stores/onetime/onetimePop'
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import type { VariantType, Transition } from 'motion-v'
 
 const onetimePopStore = useOnetimePopStore()

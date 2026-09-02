@@ -1,5 +1,3 @@
-import type { StrongEffectName } from '@/stores/strongEffect'
-
 interface StrongEffect {
     isActive: ComputedRef<boolean>
     endEffect: () => void

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useStrongEffect } from '@/composables/strongEffect'
 import { useUpdateInterval } from '@/composables/updateInterval'
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import type { CSSProperties } from 'vue'
 
 const { countMax } = useAnimationValStore()

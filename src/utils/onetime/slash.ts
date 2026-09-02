@@ -1,4 +1,3 @@
-import { random } from '@/utils/random'
 import type { VariantType, Transition } from 'motion-v'
 import type { CSSProperties } from 'vue'
 

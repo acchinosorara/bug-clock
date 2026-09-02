@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Logo from '~icons/my-icons/logo'
 import { useRoute } from 'vue-router'
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 
 const route = useRoute()
 const isHome = computed<boolean>(() => route.path === '/')

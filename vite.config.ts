@@ -17,7 +17,7 @@ export default defineConfig(({ command }) => ({
         vue(),
         AutoImport({
             imports: ['vue', 'vue-router', '@vueuse/core', 'pinia'],
-            dirs: ['./src/utils', './src/stores'],
+            dirs: ['./src/utils/**', './src/stores/**'],
             dts: 'auto-imports.d.ts'
         }),
         Unfonts({

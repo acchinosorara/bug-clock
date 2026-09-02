@@ -1,5 +1,3 @@
-import { classStateObject } from '@/utils/commonClass/classStateObject'
-import { setCommonClass } from '@/utils/commonClass/setCommonClass'
 import type { ClassState } from '@/types/ClassState'
 
 export const useIndexInvert = (structure: string[][]) => {
@@ -8,8 +6,8 @@ export const useIndexInvert = (structure: string[][]) => {
         structure.map((index) => index.map(() => classStateObject(invertClassNames)))
     )
 
-    const setInvert = (i: number, index: number): void => {
-        const invertState = invertClassStates.value.at(i)?.at(index)
+    const setInvert = (i: number, j: number): void => {
+        const invertState = invertClassStates.value.at(i)?.at(j)
         if (!invertState) return
 
         for (const name of invertClassNames) {
