@@ -4,12 +4,14 @@ import { useIndexInvert } from '@/composables/index/indexInvert'
 import { useIndexBackground } from '@/composables/index/indexBackground'
 import { useIndexBorder } from '@/composables/index/indexBorder'
 import { useIndexColor } from '@/composables/index/indexColor'
+import { useEffectState } from '@/composables/strongEffect/effectState'
 import type { CSSProperties } from 'vue'
 import type { ClassState } from '@/types/ClassState'
 
 const { delay, countMax } = useAnimationValStore()
 const { randomInt } = random()
 const { colorsIndex } = storeToRefs(useColorsIndexStore())
+const { isActive, endEffect } = useEffectState('froze')
 
 const hour = 12
 const setIndex = (i: number): string => {
@@ -47,6 +49,18 @@ const { borderClassStates, setBorder } = useIndexBorder(hour, borderClassNames, 
 
 // class切替（インデックス）
 const setTextClass = (i: number): ClassState[] | void => {
+	// フリーズ中は白背景で固定
+	if (isActive.value) {
+		const whiteClass = bgClassNames.value.at(-1)
+		if (!whiteClass) return
+		return [
+			{
+				[whiteClass]: true,
+				froze: true,
+			},
+		]
+	}
+
 	const background = bgClassStates.value.at(i)
 	const border = borderClassStates.value.at(i)
 	if (!background || !border) return
@@ -60,6 +74,8 @@ const { invertClassStates, setInvert } = useIndexInvert(indexDefaults)
 
 // class切替（文字単位）
 const setCharClass = (i: number, index: number): ClassState[] | void => {
+	if (isActive.value) return []
+
 	const color = colorClassStates.value.at(i)?.at(index)
 	const invert = invertClassStates.value.at(i)?.at(index)
 	if (!color || !invert) return
@@ -88,10 +104,27 @@ useUpdateIntervalArray({
 	countMax,
 	length: hour,
 	tick: (i) => {
-		setCharacter(i)
-		setBackground(i)
-		setBorder(i)
+		if (!isActive.value) {
+			setCharacter(i)
+			setBackground(i)
+			setBorder(i)
+		}
 	},
+})
+
+// strongEffect（フリーズ）
+const frozeDelay = 6000
+const { start } = useTimeoutFn(endEffect, frozeDelay, { immediate: false })
+
+// フリーズ中
+watch(isActive, (val) => {
+	if (!val) {
+		indexRefs.value = indexDefaults.map((index) => [...index])
+		return
+	}
+	const char = isTrigger(2) ? '?' : '!'
+	indexRefs.value = indexDefaults.map((index) => index.map(() => char))
+	start()
 })
 
 const { clockSizeSub } = storeToRefs(useClockSizeStore())
@@ -161,6 +194,10 @@ const setTextStyle = (i: number): CSSProperties => {
 				border-color: $light;
 			}
 			@include border-colors;
+		}
+
+		&.froze {
+			color: $dark100;
 		}
 
 		&-char {
