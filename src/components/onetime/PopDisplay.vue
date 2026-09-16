@@ -84,18 +84,26 @@ watch(isPopover, async (val) => {
 
 			// タグの誤表示
 			case pattern[4]:
-				newCharacters.value = onetimeTag(characters.value)
 				timeStyleState.value = {
 					justifyContent: 'flex-end',
 				}
+				newCharacters.value = onetimeTag(characters.value)
+				break
+
+			// カタカナ
+			case pattern[5]:
+				timeStyleState.value = {
+					justifyContent: 'flex-end',
+				}
+				newCharacters.value = onetimeKatakana(characters.value)
 				break
 
 			// エラー
-			case pattern[5]:
+			case pattern[6]:
 				newCharacters.value = onetimeError()
 				break
 
-			// 通常
+			// 通常時
 			default:
 				newCharacters.value = characters.value
 		}
@@ -116,7 +124,8 @@ onMounted(() => {
 		<motion.div
 			v-if="isPopover"
 			ref="pop"
-			class="pop mono"
+			class="pop"
+			:class="currentPattern === pattern[5] ? '' : 'mono'"
 			:initial="{ opacity: 0, scale: 0.9 }"
 			:animate="{ opacity: 1, scale: 1 }"
 			:exit="{ opacity: 0, scale: 1 }"
