@@ -10,12 +10,13 @@ export const useLongHands = (): Ref<CSSProperties> => {
 	}
 
 	const { isActive, endEffect } = useEffectState('longHands')
+	const { effectDuration } = storeToRefs(useStrongEffectStore())
 	const { start } = useTimeoutFn(
 		() => {
 			longStyle.value = {}
 			endEffect()
 		},
-		6000,
+		effectDuration,
 		{ immediate: false },
 	)
 

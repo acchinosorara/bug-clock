@@ -7,10 +7,10 @@ const { delay, countMax } = useAnimationValStore()
 const { randomDeci } = random()
 const { clockSizeSub } = storeToRefs(useClockSizeStore())
 
-// strongEffect（フリーズ）
+// strongEffect（froze）
 const { isActive, endEffect } = useEffectState('froze')
-const frozeDelay = 6000
-const { start } = useTimeoutFn(endEffect, frozeDelay, { immediate: false })
+const { effectDuration } = storeToRefs(useStrongEffectStore())
+const { start } = useTimeoutFn(endEffect, effectDuration, { immediate: false })
 
 watch(isActive, (val) => {
 	if (!val) return

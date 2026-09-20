@@ -7,10 +7,10 @@ import type { CSSProperties } from 'vue'
 const { now } = storeToRefs(useNowStore())
 const vibrateVal = useVibrate()
 
-// strongEffect（フリーズ）
+// strongEffect（froze）
 const { isActive, endEffect } = useEffectState('froze')
-const frozeDelay = 6000
-const { start } = useTimeoutFn(endEffect, frozeDelay, { immediate: false })
+const { effectDuration } = storeToRefs(useStrongEffectStore())
+const { start } = useTimeoutFn(endEffect, effectDuration, { immediate: false })
 
 watch(isActive, (val) => {
 	if (!val) return

@@ -49,7 +49,7 @@ const { borderClassStates, setBorder } = useIndexBorder(hour, borderClassNames, 
 
 // class切替（インデックス）
 const setTextClass = (i: number): ClassState[] | void => {
-	// フリーズ中は白背景で固定
+	// froze稼働中は白背景で固定
 	if (isActive.value) {
 		const whiteClass = bgClassNames.value.at(-1)
 		if (!whiteClass) return
@@ -112,9 +112,9 @@ useUpdateIntervalArray({
 	},
 })
 
-// strongEffect（フリーズ）
-const frozeDelay = 6000
-const { start } = useTimeoutFn(endEffect, frozeDelay, { immediate: false })
+// strongEffect（froze）
+const { effectDuration } = storeToRefs(useStrongEffectStore())
+const { start } = useTimeoutFn(endEffect, effectDuration, { immediate: false })
 
 // フリーズ中
 watch(isActive, (val) => {
