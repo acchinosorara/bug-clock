@@ -18,7 +18,7 @@ const childCount = ref<number>(0)
 // 文字間隔を出力
 const gap = ref<number>(0)
 const setGap = (): void => {
-	gap.value = randomDeci({ min: 1, max: 4 })
+	gap.value = randomDeci({ min: 1, max: 3 })
 }
 
 // translateの値を定義
@@ -143,7 +143,7 @@ useUpdateInterval({
 		}
 
 		// 複製を重ねるごとに終了確率を上げる
-		const probability = randomInt({ min: 0, max: 400 })
+		const probability = randomInt({ min: 0, max: 800 })
 
 		// 複製終了
 		if (probability < childCount.value || isOverflow()) {
