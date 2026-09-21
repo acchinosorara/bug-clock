@@ -17,7 +17,6 @@ const { isPopover, isCopied, charSize } = storeToRefs(onetimePopStore)
 const { makeButton } = storeToRefs(useMakeButtonStore())
 
 const newCharacters = ref<string[]>([])
-const timeStyleState = ref<CSSProperties>({})
 const charClassStates = ref<ClassState[]>([])
 const charStyleStates = ref<(CSSProperties | undefined)[]>([])
 const animateStates = ref<(VariantType | undefined)[]>([])
@@ -30,7 +29,6 @@ watch(isPopover, async (val) => {
 	if (val) {
 		isCopied.value = false
 		newCharacters.value = []
-		timeStyleState.value = {}
 		charClassStates.value = []
 		charStyleStates.value = []
 		animateStates.value = []
@@ -44,10 +42,6 @@ watch(isPopover, async (val) => {
 		switch (currentPattern.value) {
 			// 巨大
 			case pattern[0]:
-				timeStyleState.value = {
-					justifyContent: 'flex-end',
-					fontSize: onetimeHuge(characters.value),
-				}
 				newCharacters.value = characters.value
 				break
 
@@ -58,9 +52,6 @@ watch(isPopover, async (val) => {
 
 			// 大量生成
 			case pattern[2]:
-				timeStyleState.value = {
-					justifyContent: 'flex-end',
-				}
 				const { multipleCharacters, multipleMargin } = onetimeMultiple(characters.value)
 				newCharacters.value = multipleCharacters
 				charStyleStates.value = multipleMargin() ?? []
@@ -84,22 +75,21 @@ watch(isPopover, async (val) => {
 
 			// タグの誤表示
 			case pattern[4]:
-				timeStyleState.value = {
-					justifyContent: 'flex-end',
-				}
 				newCharacters.value = onetimeTag(characters.value)
 				break
 
 			// カタカナ
 			case pattern[5]:
-				timeStyleState.value = {
-					justifyContent: 'flex-end',
-				}
 				newCharacters.value = onetimeKatakana(characters.value)
 				break
 
-			// エラー
+			// ローマ数字
 			case pattern[6]:
+				newCharacters.value = onetimeRome(characters.value)
+				break
+
+			// エラー
+			case pattern[7]:
 				newCharacters.value = onetimeError()
 				break
 
@@ -131,7 +121,7 @@ onMounted(() => {
 			:exit="{ opacity: 0, scale: 1 }"
 			:transition="{ duration: duration, ease: easeOut }"
 		>
-			<time :datetime="origin" class="pop-today" :style="timeStyleState">
+			<time :datetime="origin" class="pop-today">
 				<motion.span
 					v-show="!isCopied"
 					v-for="(char, i) in newCharacters"
@@ -159,8 +149,9 @@ onMounted(() => {
 	position: absolute;
 	color: $light;
 	font-size: 1.25rem;
-	width: 12em;
-	height: 5em;
+	width: auto;
+	max-width: 18em;
+	height: 5.5em;
 	background-color: $dark200;
 	padding: 0 1.5em 4px;
 	border: solid 1px $dark400;
@@ -170,8 +161,14 @@ onMounted(() => {
 	translate: 0 -8px;
 	z-index: 10;
 
+	@include mq {
+		max-width: calc(100% - $inline * 2);
+	}
+
 	&-today {
-		@include flex-center;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
 		position: relative;
 		white-space: nowrap;
 		padding-right: calc(1.25em + 8px);
