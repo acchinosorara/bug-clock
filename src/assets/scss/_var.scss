@@ -7,15 +7,15 @@ $dark200: #242424;
 $dark300: #343434;
 $dark400: #484848;
 
-$orange: #eb8b47;
-$blue: #477eeb;
-$pink: #cb4da1;
-$green: #4dcb77;
+// (H)n+-195|(n+-40|30) (S)75|50 (L)55
 $colors: (
-    'orange': $orange,
-    'blue': $blue,
-    'pink': $pink,
-    'green': $green
+	"comp-orange": #e28c36,
+	"comp-blue": #3661e2,
+	"comp-pink": #c6539f,
+	"comp-green": #53c65c,
+	"sim-red": #e26a36,
+	"sim-yellow": #e2c036,
+	"sim-green": #90c653,
 );
 
 $border-light: 2px;
