@@ -5,6 +5,7 @@ export const strongEffects = [
 	'longHands',
 	'cloneHands',
 	'cloneIndex',
+	'noiseProliferate',
 	'noiseLarge',
 ] as const
 export type StrongEffectName = (typeof strongEffects)[number]
@@ -12,16 +13,16 @@ export type StrongEffectName = (typeof strongEffects)[number]
 export const useStrongEffectStore = defineStore('strongEffect', () => {
 	const { randomInt } = random()
 
-	// エフェクト稼働時間
+	// 稼働時間
 	const timeMin = 5
-	const timeMax = 11
+	const timeMax = 13
 	const effectTime = ref<number>(timeMin)
 	const effectDuration = computed<number>(() => effectTime.value * 1000)
 
-	// エフェクトを1つ選び発火
+	// エフェクトを1つだけ選択し発火
 	const activeEffect = ref<StrongEffectName | null>(null)
 	useUpdateInterval({
-		delay: 6000,
+		delay: 7000,
 		countMax: 10,
 		immediate: true,
 		tick: () => {
