@@ -1,47 +1,43 @@
-@use '_var' as *;
-@use '_mixin' as *;
+@use "var" as *;
+@use "mixin" as *;
 
 :root {
-    --border-base: 4px;
-    --header-height: 4.5rem;
-
-    @include mq {
-        --border-base: 3px;
-    }
+	--border-base: clamp(2px, 0.75vw, 4px);
+	--header-height: 4.5rem;
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 html {
-    font-size: 16px;
+	font-size: 16px;
 
-    @include mq {
-        font-size: 14px;
-    }
+	@include bp480 {
+		font-size: 14px;
+	}
 }
 
 body {
-    font-family: 'Noto Sans JP', sans-serif;
-    letter-spacing: 0.025em;
-    line-height: 1.6;
-    margin: 0;
-    background-color: $dark100;
+	font-family: "LINE Seed JP", sans-serif;
+	letter-spacing: 0.05em;
+	line-height: 1.8;
+	margin: 0;
+	background-color: $dark100;
 }
 
 .mono {
-    @include mono;
-    letter-spacing: 0;
-    line-height: 1;
+	@include mono;
+	letter-spacing: 0;
+	line-height: 1;
 }
 
 #app {
-    position: relative;
+	position: relative;
 }
 
 :has(dialog[open]) {
-    overflow: hidden;
+	overflow: hidden;
 }
