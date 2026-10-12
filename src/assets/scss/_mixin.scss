@@ -1,135 +1,148 @@
-@use '_var' as *;
+@use "var" as *;
 
-@mixin mq {
-    @media screen and (max-width: 480px) {
-        @content;
-    }
+@mixin bp768 {
+	@media screen and (max-width: 768px) {
+		@content;
+	}
+}
+
+@mixin bp480 {
+	@media screen and (max-width: 480px) {
+		@content;
+	}
 }
 
 @mixin hover {
-    @media (hover: hover) {
-        &:hover {
-            @content;
-        }
-    }
+	@media (hover: hover) {
+		&:hover {
+			@content;
+		}
+	}
+}
+
+@mixin hover-back-scale {
+	@include flex-center;
+	position: relative;
+
+	&::before {
+		@include fit;
+		content: "";
+		background-color: $dark300;
+		border-radius: 4px;
+		opacity: 0;
+		scale: 0.7;
+		transform-origin: center;
+		transition:
+			opacity $duration,
+			scale 0s $duration;
+		z-index: -1;
+	}
+
+	@include hover {
+		&::before {
+			opacity: 1;
+			scale: 1;
+			transition:
+				opacity $duration,
+				scale $duration;
+		}
+	}
 }
 
 @mixin mono {
-    font-family: 'Google Sans Code', monospace;
+	font-family: "Google Sans Code", monospace;
 }
 
 @mixin wrap {
-    min-height: 100svh;
-    padding: var(--header-height) $inline;
-    overflow: hidden;
+	min-height: 100svh;
+	padding-inline: $inline;
+	overflow: hidden;
 }
 
-@mixin sec-size {
-    width: min(100%, 800px);
-    margin-inline: auto;
+@mixin child-page-size {
+	width: min(100%, 800px);
+	margin-inline: auto;
 }
 
 @mixin flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 @mixin flex-between {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 @mixin center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    translate: -50% -50%;
-    transform-origin: center;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+	transform-origin: center;
+}
+
+@mixin fit {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+
+@mixin transition($props: all) {
+	transition: $props ease-out $duration;
 }
 
 @mixin circle {
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
+	aspect-ratio: 1 / 1;
+	border-radius: 50%;
 }
 
 @mixin circular($total) {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    --angle: calc(360deg / #{$total} * var(--i));
-    --x: calc(cos(var(--angle)) * var(--pos));
-    --y: calc(sin(var(--angle)) * var(--pos));
-    translate: calc(var(--x) - 50%) calc(var(--y) - 50%);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	--angle: calc(360deg / #{$total} * var(--i));
+	--x: calc(cos(var(--angle)) * var(--pos));
+	--y: calc(sin(var(--angle)) * var(--pos));
+	translate: calc(var(--x) - 50%) calc(var(--y) - 50%);
 }
 
 @mixin hand($width, $out) {
-    position: absolute;
-    width: $width;
-    top: 50%;
-    left: 50%;
-    translate: -50% calc($out * -1);
-    transform-origin: calc($width / 2) $out;
+	position: absolute;
+	width: $width;
+	top: 50%;
+	left: 50%;
+	translate: -50% calc($out * -1);
+	transform-origin: calc($width / 2) $out;
 }
 
 @mixin hand-inner {
-    &::before {
-        content: '';
-        position: absolute;
-        width: 50%;
-        height: calc(100% - $border-regular);
-        background-color: $dark100;
-        top: 0;
-        left: 50%;
-        translate: -50% 0;
-    }
-}
-
-@mixin text-colors {
-    @each $name, $value in $colors {
-        &-#{$name} {
-            color: $value;
-        }
-    }
-}
-
-@mixin bg-colors {
-    @each $name, $value in $colors {
-        &-#{$name} {
-            background-color: $value;
-        }
-    }
-}
-
-@mixin bg-colors-pref($pref) {
-    @each $name, $value in $colors {
-        &-#{$name} {
-            &::#{$pref} {
-                background-color: $value;
-            }
-        }
-    }
-}
-
-@mixin border-colors {
-    @each $name, $value in $colors {
-        &-#{$name} {
-            border-color: $value;
-        }
-    }
+	&::before {
+		content: "";
+		position: absolute;
+		width: 50%;
+		height: calc(100% - $border-regular);
+		background-color: $dark100;
+		top: 0;
+		left: 50%;
+		translate: -50% 0;
+	}
 }
 
 @mixin invert {
-    &.invert {
-        &-x {
-            scale: -1 1;
-        }
-        &-y {
-            scale: 1 -1;
-        }
-        &-xy {
-            scale: -1 -1;
-        }
-    }
+	&.invert {
+		&-x {
+			scale: -1 1;
+		}
+		&-y {
+			scale: 1 -1;
+		}
+		&-xy {
+			scale: -1 -1;
+		}
+	}
 }
