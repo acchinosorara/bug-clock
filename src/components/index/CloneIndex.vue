@@ -94,6 +94,7 @@ const isOverflow = (): boolean | void => {
 // ランダムに点滅
 const isBlinks = ref<boolean[]>([])
 const blink = (): void => {
+	clearInterval(blinkInterval.value)
 	blinkInterval.value = setInterval(() => {
 		const blinkTarget = randomInt({ min: 0, max: childCount.value + 1 })
 		isBlinks.value[blinkTarget] = isTrigger(2)
@@ -110,6 +111,7 @@ watch(
 )
 
 const blinkInterval = ref<number>()
+onScopeDispose(() => clearInterval(blinkInterval.value))
 
 // 複製処理
 const { isActive, endEffect } = useEffectState('cloneIndex')
