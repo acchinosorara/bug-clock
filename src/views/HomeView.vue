@@ -56,6 +56,7 @@ const setPartsStyle = (): CSSProperties[] => {
 .clock {
 	@include wrap;
 	@include flex-center;
+	padding-block: calc(var(--header-height) * 1.25);
 
 	&-parts {
 		@include flex-center;
