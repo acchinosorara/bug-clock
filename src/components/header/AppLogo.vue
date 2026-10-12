@@ -1,98 +1,101 @@
 <script setup lang="ts">
 import Logo from '~icons/my-icons/logo'
 import { useRoute } from 'vue-router'
+import type { CSSProperties } from 'vue'
 
 const route = useRoute()
 const isHome = computed<boolean>(() => route.path === '/')
 
+const { activeEffect } = storeToRefs(useStrongEffectStore())
 const { clockKey } = storeToRefs(useViewStore())
-const { colorsIndex } = storeToRefs(useColorsIndexStore())
-const { setColorsIndex } = useColorsIndexStore()
-const { colorClassNames } = setCommonClass()
+const { setColorsIndex } = useColorsStore()
 
 const reload = (): void => {
-    if (!isHome.value) return
-    clockKey.value++
-    setColorsIndex()
+	if (!isHome.value) return
+	activeEffect.value = null
+	clockKey.value++
+	setColorsIndex()
 }
 
-const setLogoClass = computed<string[]>(() => {
-    return colorClassNames[colorsIndex.value] ?? []
-})
+const colorsIndexStore = useColorsStore()
+const { colorsIndex, colorIndex } = storeToRefs(colorsIndexStore)
+const { colorsPattern } = colorsIndexStore
+
+const setStyle = (): CSSProperties => {
+	return {
+		'--color': colorsPattern[colorsIndex.value]?.[colorIndex.value],
+	}
+}
 </script>
 
 <template>
-    <RouterLink
-        :to="{ name: 'home' }"
-        @click="reload()"
-        :aria-label="isHome ? '再読み込み' : 'ホームへ戻る'"
-        class="logo"
-    >
-        <h1 class="logo-h">
-            <span
-                v-for="(className, i) in setLogoClass"
-                :key="i"
-                :class="className"
-                class="logo-image"
-            >
-                <Logo />
-            </span>
-        </h1>
-    </RouterLink>
+	<RouterLink
+		:to="{ name: 'home' }"
+		@click="reload()"
+		:aria-label="isHome ? '再読み込み' : 'ホームへ戻る'"
+		class="logo"
+	>
+		<h1 class="logo-h">
+			<span :style="setStyle()" class="logo-h-ic">
+				<Logo />
+			</span>
+			<p>バグった時計</p>
+		</h1>
+	</RouterLink>
 </template>
 
 <style lang="scss" scoped>
 .logo {
-    &-h {
-        position: relative;
-    }
+	&-h {
+		@include flex-center;
+		gap: 0.5em;
+		position: relative;
+		color: $light;
+		font-size: 0.9rem;
+		font-weight: bold;
+		letter-spacing: 0.08em;
 
-    &-image {
-        display: flex;
-        height: calc(var(--header-height) / 3);
+		&-ic {
+			position: relative;
+			color: var(--color);
 
-        @include mq {
-            height: calc(var(--header-height) / 3.5);
-        }
+			&::before {
+				@include center;
+				@include circle;
+				content: '';
+				height: 100%;
+				background-color: var(--color);
+				opacity: 0;
+				transform-origin: center;
+				z-index: -1;
+				animation: radiation 3.5s ease-out infinite;
 
-        &:not(:last-child) {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
+				@keyframes radiation {
+					0% {
+						opacity: 0;
+						scale: 0;
+					}
+					12.5% {
+						opacity: 0.7;
+						scale: 1;
+					}
+					25% {
+						opacity: 0;
+						scale: 2;
+					}
+					100% {
+						opacity: 0;
+						scale: 2;
+					}
+				}
+			}
 
-        &:nth-child(1) {
-            translate: -2px 0;
-
-            @include mq {
-                translate: -1px 0;
-            }
-        }
-
-        &:nth-child(2) {
-            translate: 2px 0;
-
-            @include mq {
-                translate: 1px 0;
-            }
-        }
-
-        &:last-child {
-            position: relative;
-        }
-
-        &.color {
-            @include text-colors;
-
-            &-white {
-                color: $light;
-            }
-        }
-
-        svg {
-            width: auto;
-            height: 100%;
-        }
-    }
+			svg {
+				display: flex;
+				width: auto;
+				height: calc(var(--header-height) / 3);
+			}
+		}
+	}
 }
 </style>
