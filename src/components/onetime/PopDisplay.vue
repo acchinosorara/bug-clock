@@ -161,7 +161,7 @@ onMounted(() => {
 	translate: 0 -8px;
 	z-index: 10;
 
-	@include mq {
+	@include bp768 {
 		max-width: calc(100% - $inline * 2);
 	}
 
