@@ -3,7 +3,9 @@ import { useEffectState } from '@/composables/strongEffect/effectState'
 import { useUpdateInterval } from '@/composables/updateInterval'
 import type { CSSProperties } from 'vue'
 
-const { colorsIndex } = storeToRefs(useColorsIndexStore())
+const colorsIndexStore = useColorsStore()
+const { colorsIndex } = storeToRefs(colorsIndexStore)
+const { colorsPattern } = colorsIndexStore
 const { clockSizeSub } = storeToRefs(useClockSizeStore())
 const { delay, countMax } = useAnimationValStore()
 const { randomInt, randomDeci } = random()
@@ -27,10 +29,8 @@ const setVal = (minVal: number, maxVal: number): number[] => {
 	return setArray(noiseIndex.value, () => randomInt({ min: minVal, max: maxVal }))
 }
 
-// ノイズ総数分のbgClassNamesインデックス番号
-const { bgClassNames } = setCommonClass()
-const bgLength = bgClassNames.length
-const bgClassNamesIndex = ref<number[]>([])
+// ノイズ総数分のcolorsPatternインデックス番号
+const colorIndex = ref<number[]>([])
 
 // ノイズ総数分のCSS値
 const widthMax = clockSizeSub.value / 10
@@ -50,11 +50,12 @@ useUpdateInterval({
 			: 0
 
 		if (noiseIndex.value > 0) {
-			bgClassNamesIndex.value = setVal(0, bgLength)
-
 			// 横長にする
 			width.value = setVal(4, widthMax)
 			height.value = width.value.map((w) => randomInt({ min: 1, max: w / 3 }))
+
+			const pattern = colorsPattern[colorsIndex.value] ?? []
+			colorIndex.value = setVal(0, pattern.length + 1)
 
 			opacity.value = setArray(noiseIndex.value, () => randomDeci({ min: 0.6, max: 1 }))
 
@@ -75,6 +76,7 @@ const setStyle = (i: number): CSSProperties => {
 	return {
 		width: `${width.value[i]}px`,
 		height: `${height.value[i]}px`,
+		backgroundColor: colorsPattern[colorsIndex.value]?.[colorIndex.value[i] ?? 0] ?? '#f0f0f0',
 		opacity: `${opacity.value[i]}`,
 		translate: `calc(-50% ${translateX.value[i]}px) calc(-50% ${translateY.value[i]}px)`,
 	}
@@ -82,18 +84,7 @@ const setStyle = (i: number): CSSProperties => {
 </script>
 
 <template>
-	<span
-		v-for="(_, i) in noiseIndex"
-		:key="i"
-		:style="setStyle(i)"
-		:class="
-			bgClassNames[colorsIndex]?.[
-				bgClassNamesIndex[i] ?? randomInt({ min: 0, max: bgLength })
-			]
-		"
-		class="noise"
-	>
-	</span>
+	<span v-for="(_, i) in noiseIndex" :key="i" :style="setStyle(i)" class="noise"> </span>
 </template>
 
 <style lang="scss" scoped>
@@ -102,9 +93,5 @@ const setStyle = (i: number): CSSProperties => {
 	mix-blend-mode: difference;
 	top: 50%;
 	left: 50%;
-
-	&.bg {
-		@include bg-colors;
-	}
 }
 </style>

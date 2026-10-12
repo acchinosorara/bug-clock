@@ -1,56 +1,60 @@
 <script setup lang="ts">
+import type { CSSProperties } from 'vue'
+
 const { limit } = useOnetimePopStore()
 const countMax = limit / 1000
 const countVal = ref<number>(countMax)
 let interval: number
 
 onMounted(() => {
-    interval = setInterval(() => {
-        countVal.value--
-    }, 1000)
+	interval = setInterval(() => {
+		countVal.value--
+	}, 1000)
 })
 
 onUnmounted(() => {
-    clearInterval(interval)
+	clearInterval(interval)
 })
 
-const { colorsIndex, colorIndex } = storeToRefs(useColorsIndexStore())
-const { bgClassNames } = setCommonClass()
-const setProgressColorClass = (): string => {
-    return bgClassNames[colorsIndex.value]?.[colorIndex.value] ?? ''
+const colorsIndexStore = useColorsStore()
+const { colorsIndex, colorIndex } = storeToRefs(colorsIndexStore)
+const { colorsPattern } = colorsIndexStore
+
+const setStyle = (): CSSProperties => {
+	return {
+		'--color': colorsPattern[colorsIndex.value]?.[colorIndex.value],
+	}
 }
 </script>
 
 <template>
-    <progress
-        :value="countVal"
-        :max="countMax"
-        :class="setProgressColorClass()"
-        class="progress"
-    ></progress>
+	<progress :value="countVal" :max="countMax" :style="setStyle()" class="progress"></progress>
 </template>
 
 <style lang="scss" scoped>
 $progress-height: 4px;
 
 .progress {
-    position: absolute;
-    width: calc(100% - $progress-height * 4);
-    height: $progress-height;
-    background-color: $dark400;
-    border-radius: $progress-height;
-    overflow: hidden;
-    bottom: calc($progress-height * 2);
-    left: 50%;
-    translate: -50% 0;
+	position: absolute;
+	width: calc(100% - $progress-height * 4);
+	height: $progress-height;
+	background-color: $dark400;
+	border-radius: $progress-height;
+	overflow: hidden;
+	bottom: calc($progress-height * 2);
+	left: 50%;
+	translate: -50% 0;
 
-    &::-webkit-progress-bar {
-        background-color: $dark400;
-    }
+	&::-webkit-progress-bar {
+		background-color: $dark400;
+	}
 
-    &.bg {
-        @include bg-colors-pref(-webkit-progress-value);
-        @include bg-colors-pref(-moz-progress-bar);
-    }
+	&::-webkit-progress-value {
+		background-color: var(--color);
+	}
+
+	&::-moz-progress-bar {
+		background-color: var(--color);
+	}
 }
 </style>

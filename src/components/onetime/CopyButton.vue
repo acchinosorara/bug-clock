@@ -2,79 +2,82 @@
 import CopyIcon from '~icons/my-icons/copy'
 import CheckIcon from '~icons/my-icons/check'
 import { useMakeOnetime } from '@/composables/makeOnetime'
+import type { CSSProperties } from 'vue'
 
-const { bgClassNames } = setCommonClass()
-const { colorsIndex, colorIndex } = storeToRefs(useColorsIndexStore())
+const colorsIndexStore = useColorsStore()
+const { colorsIndex, colorIndex } = storeToRefs(colorsIndexStore)
+const { colorsPattern } = colorsIndexStore
 
 const { origin } = useMakeOnetime()
 const { copy } = useClipboard({ legacy: true })
 const { isCopied } = storeToRefs(useOnetimePopStore())
 
 const { start } = useTimeoutFn(
-    () => {
-        isCopied.value = false
-    },
-    3000,
-    { immediate: false }
+	() => {
+		isCopied.value = false
+	},
+	3000,
+	{ immediate: false },
 )
 
 const copied = (): void => {
-    copy(origin)
-    isCopied.value = true
-    start()
+	copy(origin)
+	isCopied.value = true
+	start()
 }
 
-const setClass = computed<string[]>(() => {
-    return [
-        isCopied.value ? 'copied' : '',
-        bgClassNames[colorsIndex.value]?.[colorIndex.value] ?? ''
-    ]
+const setClass = computed<string>(() => {
+	return isCopied.value ? 'copied' : ''
 })
+
+const setStyle = (): CSSProperties => {
+	return {
+		backgroundColor: isCopied.value
+			? colorsPattern[colorsIndex.value]?.[colorIndex.value]
+			: undefined,
+	}
+}
 </script>
 
 <template>
-    <span v-if="isCopied" class="message">Copied the date.</span>
-    <button @click="copied()" :class="setClass" class="copy">
-        <CheckIcon v-if="isCopied" />
-        <CopyIcon v-else />
-    </button>
+	<span v-if="isCopied" class="message">Copied the date.</span>
+	<button @click="copied()" :class="setClass" :style="setStyle()" class="copy">
+		<CheckIcon v-if="isCopied" />
+		<CopyIcon v-else />
+	</button>
 </template>
 
 <style lang="scss" scoped>
 .copy {
-    position: absolute;
-    width: 1.25em;
-    aspect-ratio: 1 / 1;
-    border-radius: 4px;
-    color: $light300;
-    top: 50%;
-    right: 0;
-    translate: 0 -50%;
-    transition: background-color $duration;
+	@include transition(background-color);
+	position: absolute;
+	width: 1.25em;
+	aspect-ratio: 1 / 1;
+	border-radius: 4px;
+	color: $light300;
+	top: 50%;
+	right: 0;
+	translate: 0 -50%;
 
-    @include hover {
-        color: $light200;
-        background-color: $dark300;
-    }
+	@include hover {
+		color: $light200;
+		background-color: $dark300;
+	}
 
-    &.copied {
-        color: $light;
+	&.copied {
+		color: $light;
+	}
 
-        &.bg {
-            @include bg-colors;
-        }
-    }
-
-    svg {
-        @include center;
-        width: 0.75em;
-        height: auto;
-        transition: all $duration;
-    }
+	svg {
+		@include center;
+		@include transition;
+		width: 0.75em;
+		height: auto;
+	}
 }
 
 .message {
-    color: $light;
-    font-size: 0.75em;
+	color: $light;
+	font-size: 0.75em;
 }
 </style>

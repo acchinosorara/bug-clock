@@ -4,19 +4,8 @@ $light300: #a0a0a0;
 $light400: #646464;
 $dark100: #181818;
 $dark200: #242424;
-$dark300: #343434;
+$dark300: #303030;
 $dark400: #484848;
-
-// (H)n+-195|(n+-40|30) (S)75|50 (L)55
-$colors: (
-	"comp-orange": #e28c36,
-	"comp-blue": #3661e2,
-	"comp-pink": #c6539f,
-	"comp-green": #53c65c,
-	"sim-red": #e26a36,
-	"sim-yellow": #e2c036,
-	"sim-green": #90c653,
-);
 
 $border-light: 2px;
 $border-regular: calc(var(--border-base) * 1.5);
@@ -25,7 +14,7 @@ $border-semibold: calc(var(--border-base) * 3);
 $border-bold: calc(var(--border-base) * 4);
 $border-extrabold: calc(var(--border-base) * 5);
 
-$inline: clamp(1.25rem, 2vw, 3rem);
+$inline: clamp(1.5rem, 1vw, 2.5rem);
 $block: 1.5rem;
 $index-size: clamp(1.8rem, 8vw, 2.75rem);
 $scale-height: 0.8rem;

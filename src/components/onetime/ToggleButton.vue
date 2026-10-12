@@ -2,16 +2,16 @@
 import { motion } from 'motion-v'
 import AsteriskIcon from '~icons/my-icons/asterisk'
 import type { VariantType, Transition } from 'motion-v'
+import type { CSSProperties } from 'vue'
 
 const onetimePopStore = useOnetimePopStore()
 const { limit } = onetimePopStore
 const { isPopover, timeout } = storeToRefs(onetimePopStore)
 const { makeButton } = storeToRefs(useMakeButtonStore())
 
-const { colorClassNames, borderClassNames } = setCommonClass()
-const { colorsIndex, colorIndex } = storeToRefs(useColorsIndexStore())
-const { setColorIndex } = useColorsIndexStore()
-const colorClasses = ref<string[]>([])
+const colorsIndexStore = useColorsStore()
+const { colorsIndex, colorIndex } = storeToRefs(colorsIndexStore)
+const { colorsPattern, setColorIndex } = colorsIndexStore
 
 const asterKey = ref<number>(0)
 const spinAnimate: VariantType = {
@@ -42,20 +42,17 @@ const popToggle = (): void => {
 	}, limit)
 }
 
-const setClass = (): void => {
-	setColorIndex()
-	colorClasses.value = [
-		colorClassNames[colorsIndex.value]?.[colorIndex.value] ?? '',
-		borderClassNames[colorsIndex.value]?.[colorIndex.value] ?? '',
-	]
+const setStyle = (): CSSProperties => {
+	if (!isPopover.value) return {}
+	const color = colorsPattern[colorsIndex.value]?.[colorIndex.value]
+	return {
+		color,
+		borderColor: color,
+	}
 }
 
 watch(isPopover, (val) => {
-	if (val) {
-		setClass()
-	} else {
-		colorClasses.value = []
-	}
+	if (val) setColorIndex()
 })
 </script>
 
@@ -63,7 +60,7 @@ watch(isPopover, (val) => {
 	<button
 		:ref="(el) => (makeButton = el as HTMLButtonElement | null)"
 		class="make-btn"
-		:class="colorClasses"
+		:style="setStyle()"
 		@click="popToggle()"
 	>
 		<motion.span
@@ -80,21 +77,13 @@ watch(isPopover, (val) => {
 <style lang="scss" scoped>
 .make-btn {
 	@include circle;
+	@include transition;
 	position: relative;
 	width: $make-button-size;
 	background-color: $dark200;
 	border: solid 1px $dark400;
 	color: $light;
-	transition: all $duration;
 	z-index: 20;
-
-	&.color {
-		@include text-colors;
-	}
-
-	&.border {
-		@include border-colors;
-	}
 
 	&-ic {
 		@include center;

@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { useUpdateIntervalArray } from '@/composables/updateIntervalArray'
+import { useColorStates } from '@/composables/index/colorStates'
 import { useIndexInvert } from '@/composables/index/indexInvert'
-import { useIndexBackground } from '@/composables/index/indexBackground'
-import { useIndexBorder } from '@/composables/index/indexBorder'
-import { useIndexColor } from '@/composables/index/indexColor'
 import { useEffectState } from '@/composables/strongEffect/effectState'
 import type { CSSProperties } from 'vue'
 import type { ClassState } from '@/types/ClassState'
 
 const { delay, countMax } = useAnimationValStore()
 const { randomInt } = random()
-const { colorsIndex } = storeToRefs(useColorsIndexStore())
 const { isActive, endEffect } = useEffectState('froze')
 
 const hour = 12
@@ -35,53 +32,26 @@ const garbledCharacters = [
 	['P', 'q', ','],
 ]
 
-const {
-	colorClassNames: colorClassPatterns,
-	bgClassNames: bgClassPatterns,
-	borderClassNames: borderClassPatterns,
-} = setCommonClass()
+// 状態管理
+const { white, backgrounds, borderColors, textColors, setBackground, setBorder, setColor } =
+	useColorStates(indexDefaults)
 
-// classの状態管理（インデックス）
-const bgClassNames = computed(() => bgClassPatterns[colorsIndex.value] ?? [])
-const borderClassNames = computed(() => borderClassPatterns[colorsIndex.value] ?? [])
-const { bgClassStates, currentBackgrounds, setBackground } = useIndexBackground(hour, bgClassNames)
-const { borderClassStates, setBorder } = useIndexBorder(hour, borderClassNames, currentBackgrounds)
-
-// class切替（インデックス）
-const setTextClass = (i: number): ClassState[] | void => {
-	// froze稼働中は白背景で固定
-	if (isActive.value) {
-		const whiteClass = bgClassNames.value.at(-1)
-		if (!whiteClass) return
-		return [
-			{
-				[whiteClass]: true,
-				froze: true,
-			},
-		]
-	}
-
-	const background = bgClassStates.value.at(i)
-	const border = borderClassStates.value.at(i)
-	if (!background || !border) return
-	return [background, border]
-}
-
-// classの状態管理（文字単位）
-const colorClassNames = computed(() => colorClassPatterns[colorsIndex.value] ?? [])
-const { colorClassStates, setColor } = useIndexColor(indexDefaults, colorClassNames)
 const { invertClassStates, setInvert } = useIndexInvert(indexDefaults)
 
-// class切替（文字単位）
+// style・class切替（文字単位）
 const setCharClass = (i: number, index: number): ClassState[] | void => {
 	if (isActive.value) return []
 
-	const color = colorClassStates.value.at(i)?.at(index)
 	const invert = invertClassStates.value.at(i)?.at(index)
-	if (!color || !invert) return
-	return [color, invert]
+	if (!invert) return
+	return [invert]
 }
 
+const setCharStyle = (i: number, index: number): CSSProperties => ({
+	color: isActive.value ? undefined : textColors.value.at(i)?.at(index),
+})
+
+// アニメーション
 const setCharacter = (i: number): void => {
 	indexRefs.value[i]?.forEach((_, j) => {
 		const defaultChar = indexDefaults.at(i)?.at(j)
@@ -116,7 +86,6 @@ useUpdateIntervalArray({
 const { effectDuration } = storeToRefs(useStrongEffectStore())
 const { start } = useTimeoutFn(endEffect, effectDuration, { immediate: false })
 
-// フリーズ中
 watch(isActive, (val) => {
 	if (!val) {
 		indexRefs.value = indexDefaults.map((index) => [...index])
@@ -132,13 +101,18 @@ const scaleStore = useScaleHeightStore()
 const { scaleHeightDefault } = scaleStore
 const { scaleHeight } = storeToRefs(scaleStore)
 
-// styleを出力
-const setTextStyle = (i: number): CSSProperties => {
+// style・class切替（インデックス単位）
+const setIndexClass = (): ClassState => ({ froze: isActive.value })
+
+const setIndexStyle = (i: number): CSSProperties => {
 	return {
 		'--i': i,
 		'--pos': `
             calc(${clockSizeSub.value / 2}px - 0.5em - ${Math.round(scaleHeight.value ?? scaleHeightDefault / 1.5)}px)
         `,
+		// frozeの間は白背景で固定
+		backgroundColor: isActive.value ? white : backgrounds.value.at(i),
+		borderColor: isActive.value ? undefined : borderColors.value.at(i),
 	}
 }
 </script>
@@ -148,14 +122,15 @@ const setTextStyle = (i: number): CSSProperties => {
 		<div
 			v-for="(_, i) in hour"
 			:key="i"
-			:style="setTextStyle(i)"
-			:class="setTextClass(i)"
+			:style="setIndexStyle(i)"
+			:class="setIndexClass()"
 			class="index-text mono"
 		>
 			<span
-				v-for="(char, index) in indexRefs[i]"
-				:key="index"
-				:class="setCharClass(i, index)"
+				v-for="(char, j) in indexRefs[i]"
+				:key="j"
+				:style="setCharStyle(i, j)"
+				:class="setCharClass(i, j)"
 				class="index-text-char"
 			>
 				{{ char }}
@@ -182,31 +157,11 @@ const setTextStyle = (i: number): CSSProperties => {
 		rotate: 90deg;
 		transform-origin: center;
 
-		&.bg {
-			&-white {
-				background-color: $light;
-			}
-			@include bg-colors;
-		}
-
-		&.border {
-			&-white {
-				border-color: $light;
-			}
-			@include border-colors;
-		}
-
 		&.froze {
 			color: $dark100;
 		}
 
 		&-char {
-			&.color {
-				&-white {
-					color: $light;
-				}
-				@include text-colors;
-			}
 			@include invert;
 		}
 	}

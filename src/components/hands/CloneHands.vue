@@ -62,20 +62,22 @@ const isOverflow = (): boolean => {
 }
 
 // 色を指定
-const { colorsIndex } = storeToRefs(useColorsIndexStore())
-const { bgClassNames } = setCommonClass()
-const bgClasses = computed(() => bgClassNames[colorsIndex.value] ?? [])
+const colorsIndexStore = useColorsStore()
+const { colorsIndex } = storeToRefs(colorsIndexStore)
+const { colorsPattern } = colorsIndexStore
 
 const colorIndexes = ref<number[]>([])
 const addColorIndex = (): void => {
-	colorIndexes.value.push(randomInt({ min: 0, max: bgClasses.value.length }))
+	const pattern = colorsPattern[colorsIndex.value] ?? []
+	colorIndexes.value.push(randomInt({ min: 0, max: pattern.length + 1 }))
 }
 
-const setClass = (i: number): string => {
-	return bgClasses.value[colorIndexes.value[i] ?? 0] ?? ''
+const setColorStyle = (i: number): CSSProperties => {
+	return {
+		backgroundColor: colorsPattern[colorsIndex.value]?.[colorIndexes.value[i] ?? 0],
+	}
 }
 
-// 複製処理
 const { isActive, endEffect } = useEffectState('cloneHands')
 
 // エフェクト終了で複製体を削除
@@ -145,8 +147,8 @@ const minuteStyle = computed<CSSProperties>(() => {
 			:style="setStyle(i)"
 			class="clone-hands-item"
 		>
-			<span class="hour" :class="setClass(i)" :style="hourStyle"></span>
-			<span class="minute" :class="setClass(i)" :style="minuteStyle"></span>
+			<span class="hour" :style="[hourStyle, setColorStyle(i)]"></span>
+			<span class="minute" :style="[minuteStyle, setColorStyle(i)]"></span>
 		</div>
 	</div>
 </template>
@@ -164,25 +166,15 @@ const minuteStyle = computed<CSSProperties>(() => {
 
 .hour {
 	@include hand($border-extrabold, 0);
+	@include hand-inner;
 	height: 25%;
 	background-color: $light;
-
-	@include hand-inner;
-
-	&.bg {
-		@include bg-colors;
-	}
 }
 
 .minute {
 	@include hand($border-extrabold, 0);
+	@include hand-inner;
 	height: calc(50% - $scale-height - $border-semibold);
 	background-color: $light;
-
-	@include hand-inner;
-
-	&.bg {
-		@include bg-colors;
-	}
 }
 </style>
