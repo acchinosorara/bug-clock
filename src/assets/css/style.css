@@ -96,13 +96,8 @@ meter {
 }
 
 :root {
-  --border-base: 4px;
+  --border-base: clamp(2px, 0.75vw, 4px);
   --header-height: 4.5rem;
-}
-@media screen and (max-width: 480px) {
-  :root {
-    --border-base: 3px;
-  }
 }
 
 *,
@@ -121,9 +116,9 @@ html {
 }
 
 body {
-  font-family: "Noto Sans JP", sans-serif;
-  letter-spacing: 0.025em;
-  line-height: 1.6;
+  font-family: "LINE Seed JP", sans-serif;
+  letter-spacing: 0.05em;
+  line-height: 1.8;
   margin: 0;
   background-color: #181818;
 }
