@@ -11,7 +11,7 @@ const { initStyle } = useViewStore()
 <template>
 	<footer :style="initStyle()" :class="setClass()" class="footer">
 		<div class="footer-column mono">
-			<small class="ver">ver.0:1:0</small>
+			<small class="ver">ver.0:1:1</small>
 			<small>&copy;2026 acchinosorara</small>
 		</div>
 	</footer>
