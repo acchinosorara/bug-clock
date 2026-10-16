@@ -17,9 +17,10 @@ const { isPopover, isCopied, charSize } = storeToRefs(onetimePopStore)
 const { makeButton } = storeToRefs(useMakeButtonStore())
 
 const newCharacters = ref<string[]>([])
+const timeStyleStates = ref<CSSProperties>({})
 const charClassStates = ref<ClassState[]>([])
-const charStyleStates = ref<(CSSProperties | undefined)[]>([])
-const animateStates = ref<(VariantType | undefined)[]>([])
+const charStyleStates = ref<CSSProperties[]>([])
+const animateStates = ref<VariantType[]>([])
 const transitionState = ref<Transition>({})
 
 const pop = useTemplateRef<ComponentPublicInstance>('pop')
@@ -29,6 +30,7 @@ watch(isPopover, async (val) => {
 	if (val) {
 		isCopied.value = false
 		newCharacters.value = []
+		timeStyleStates.value = {}
 		charClassStates.value = []
 		charStyleStates.value = []
 		animateStates.value = []
@@ -42,6 +44,7 @@ watch(isPopover, async (val) => {
 		switch (currentPattern.value) {
 			// 巨大
 			case pattern[0]:
+				timeStyleStates.value = onetimeHuge(characters.value)
 				newCharacters.value = characters.value
 				break
 
@@ -121,7 +124,7 @@ onMounted(() => {
 			:exit="{ opacity: 0, scale: 1 }"
 			:transition="{ duration: duration, ease: easeOut }"
 		>
-			<time :datetime="origin" class="pop-today">
+			<time :datetime="origin" :style="timeStyleStates" class="pop-today">
 				<motion.span
 					v-show="!isCopied"
 					v-for="(char, i) in newCharacters"
