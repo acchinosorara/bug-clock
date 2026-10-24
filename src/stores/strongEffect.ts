@@ -5,6 +5,7 @@ export const strongEffects = [
 	'longHands',
 	'cloneHands',
 	'cloneIndex',
+	'overIndex',
 	'noiseProliferate',
 	'noiseLarge',
 ] as const

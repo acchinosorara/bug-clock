@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useUpdateInterval } from '@/composables/updateInterval'
 import { useUpdateIntervalArray } from '@/composables/updateIntervalArray'
 import { useColorStates } from '@/composables/index/colorStates'
 import { useIndexInvert } from '@/composables/index/indexInvert'
@@ -7,8 +8,9 @@ import type { CSSProperties } from 'vue'
 import type { ClassState } from '@/types/ClassState'
 
 const { delay, countMax } = useAnimationValStore()
-const { randomInt } = random()
-const { isActive, endEffect } = useEffectState('froze')
+const { randomInt, randomDeci } = random()
+
+const { isActive, endEffect } = useEffectState(['froze', 'overIndex'])
 
 const hour = 12
 const setIndex = (i: number): string => {
@@ -82,17 +84,45 @@ useUpdateIntervalArray({
 	},
 })
 
-// strongEffect（froze）
+// strongEffect
+const { isActive: isFroze } = useEffectState('froze')
+const { isActive: isOverIndex } = useEffectState('overIndex')
 const { effectDuration } = storeToRefs(useStrongEffectStore())
 const { start } = useTimeoutFn(endEffect, effectDuration, { immediate: false })
 
+const fontDivisors = ref<number[]>(setArray<number>(hour, 1))
+const fontOffsets = ref<number[]>(setArray<number>(hour, 0))
+
+useUpdateInterval({
+	delay,
+	countMax,
+	tick: () => {
+		if (!isOverIndex.value) return
+		if (!isTrigger(3)) {
+			fontOffsets.value = setArray<number>(hour, 0)
+			return
+		}
+		fontOffsets.value = setArray<number>(hour, () => randomInt({ min: -24, max: 25 }))
+	},
+})
+
 watch(isActive, (val) => {
+	fontOffsets.value = setArray<number>(hour, 0)
 	if (!val) {
 		indexRefs.value = indexDefaults.map((index) => [...index])
 		return
 	}
-	const char = isTrigger(2) ? '?' : '!'
-	indexRefs.value = indexDefaults.map((index) => index.map(() => char))
+
+	switch (true) {
+		case isFroze.value:
+			const char = isTrigger(2) ? '?' : '!'
+			indexRefs.value = indexDefaults.map((index) => index.map(() => char))
+			break
+		case isOverIndex.value:
+			indexRefs.value = indexDefaults
+			fontDivisors.value = setArray<number>(hour, () => randomDeci({ min: 1, max: 3 }))
+			break
+	}
 	start()
 })
 
@@ -102,17 +132,32 @@ const { scaleHeightDefault } = scaleStore
 const { scaleHeight } = storeToRefs(scaleStore)
 
 // style・class切替（インデックス単位）
-const setIndexClass = (): ClassState => ({ froze: isActive.value })
+const setIndexClass = (): ClassState => ({ froze: isFroze.value })
+
+const setBackgroundColor = (i: number): string | undefined => {
+	if (isFroze.value) return white
+	if (isActive.value) return
+	return backgrounds.value.at(i)
+}
+
+const setPos = (): string => {
+	if (isOverIndex.value) return `${clockSizeSub.value / 1.5}px`
+	return `calc(${clockSizeSub.value / 2}px - 0.5em - ${Math.round(scaleHeight.value ?? scaleHeightDefault / 1.5)}px)`
+}
+
+const setFontSize = (i: number): string | undefined => {
+	if (!isOverIndex.value) return
+	const base = clockSizeSub.value / (fontDivisors.value.at(i) ?? 2)
+	return `${base + (fontOffsets.value.at(i) ?? 0)}px`
+}
 
 const setIndexStyle = (i: number): CSSProperties => {
 	return {
 		'--i': i,
-		'--pos': `
-            calc(${clockSizeSub.value / 2}px - 0.5em - ${Math.round(scaleHeight.value ?? scaleHeightDefault / 1.5)}px)
-        `,
-		// frozeの間は白背景で固定
-		backgroundColor: isActive.value ? white : backgrounds.value.at(i),
+		'--pos': setPos(),
+		backgroundColor: setBackgroundColor(i),
 		borderColor: isActive.value ? undefined : borderColors.value.at(i),
+		fontSize: setFontSize(i),
 	}
 }
 </script>
