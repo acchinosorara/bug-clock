@@ -17,7 +17,7 @@ const { start } = useTimeoutFn(
 		isCopied.value = false
 	},
 	3000,
-	{ immediate: false },
+	{ immediate: false }
 )
 
 const copied = (): void => {
@@ -34,7 +34,7 @@ const setStyle = (): CSSProperties => {
 	return {
 		backgroundColor: isCopied.value
 			? colorsPattern[colorsIndex.value]?.[colorIndex.value]
-			: undefined,
+			: undefined
 	}
 }
 </script>
@@ -51,7 +51,7 @@ const setStyle = (): CSSProperties => {
 .copy {
 	@include transition(background-color);
 	position: absolute;
-	width: 1.25em;
+	width: 1.5em;
 	aspect-ratio: 1 / 1;
 	border-radius: 4px;
 	color: $light300;
@@ -71,13 +71,13 @@ const setStyle = (): CSSProperties => {
 	svg {
 		@include center;
 		@include transition;
-		width: 0.75em;
+		width: 0.8em;
 		height: auto;
 	}
 }
 
 .message {
 	color: $light;
-	font-size: 0.75em;
+	font-size: 1.2rem;
 }
 </style>
