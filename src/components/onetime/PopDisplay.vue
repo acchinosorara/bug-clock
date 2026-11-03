@@ -17,6 +17,7 @@ const { isPopover, isCopied, charSize } = storeToRefs(onetimePopStore)
 const { makeButton } = storeToRefs(useMakeButtonStore())
 
 const newCharacters = ref<string[]>([])
+const timeClassState = ref<string>('mono')
 const timeStyleStates = ref<CSSProperties>({})
 const charClassStates = ref<ClassState[]>([])
 const charStyleStates = ref<CSSProperties[]>([])
@@ -30,6 +31,7 @@ watch(isPopover, async (val) => {
 	if (val) {
 		isCopied.value = false
 		newCharacters.value = []
+		timeClassState.value = 'mono'
 		timeStyleStates.value = {}
 		charClassStates.value = []
 		charStyleStates.value = []
@@ -67,7 +69,7 @@ watch(isPopover, async (val) => {
 					isSlashIndex,
 					slashHeight,
 					slashAnimate,
-					slashTransition,
+					slashTransition
 				} = onetimeSlash(characters.value)
 				newCharacters.value = slashRemoveCharacters
 				isEffectIndex.value = isSlashIndex
@@ -84,6 +86,7 @@ watch(isPopover, async (val) => {
 			// カタカナ
 			case pattern[5]:
 				newCharacters.value = onetimeKatakana(characters.value)
+				timeClassState.value = ''
 				break
 
 			// ローマ数字
@@ -94,6 +97,7 @@ watch(isPopover, async (val) => {
 			// エラー
 			case pattern[7]:
 				newCharacters.value = onetimeError()
+				timeClassState.value = ''
 				break
 
 			// 通常時
@@ -107,7 +111,7 @@ watch(isPopover, async (val) => {
 
 onMounted(() => {
 	onClickOutside(popElement, () => (isPopover.value = false), {
-		ignore: [makeButton],
+		ignore: [makeButton]
 	})
 })
 </script>
@@ -118,13 +122,17 @@ onMounted(() => {
 			v-if="isPopover"
 			ref="pop"
 			class="pop"
-			:class="currentPattern === pattern[5] ? '' : 'mono'"
 			:initial="{ opacity: 0, scale: 0.9 }"
 			:animate="{ opacity: 1, scale: 1 }"
 			:exit="{ opacity: 0, scale: 1 }"
 			:transition="{ duration: duration, ease: easeOut }"
 		>
-			<time :datetime="origin" :style="timeStyleStates" class="pop-today">
+			<time
+				:datetime="origin"
+				:style="timeStyleStates"
+				:class="timeClassState"
+				class="pop-today"
+			>
 				<motion.span
 					v-show="!isCopied"
 					v-for="(char, i) in newCharacters"
@@ -151,7 +159,7 @@ onMounted(() => {
 	justify-content: center;
 	position: absolute;
 	color: $light;
-	font-size: 1.25rem;
+	font-size: 1.2rem;
 	width: auto;
 	max-width: 18em;
 	height: 5.5em;
@@ -168,6 +176,10 @@ onMounted(() => {
 		max-width: calc(100% - $inline * 2);
 	}
 
+	@include bp480 {
+		padding-inline: 1.25em;
+	}
+
 	&-today {
 		display: flex;
 		justify-content: flex-end;
@@ -176,6 +188,10 @@ onMounted(() => {
 		white-space: nowrap;
 		padding-right: calc(1.25em + 8px);
 		z-index: 10;
+
+		&:not(.mono) {
+			font-size: 0.9em;
+		}
 
 		&-char {
 			@include invert;
