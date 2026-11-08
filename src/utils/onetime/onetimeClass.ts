@@ -19,8 +19,6 @@ export const onetimeClass = (characters: string[], currentPattern: string | null
 			case pattern[3]:
 				classStates.push({ [pattern[3]!]: isEffectIndex.value[i] ?? false })
 				break
-			default:
-				classStates.push({ [currentPattern as string]: isTrigger(3) })
 		}
 	})
 
