@@ -11,17 +11,17 @@ const { delay, countMax } = useAnimationValStore()
 const { randomInt, randomDeci } = random()
 
 // strongEffect（noiseProliferate）
-const { isActive, endEffect } = useEffectState('noiseProliferate')
+const { isActive: isProliferate, endEffect } = useEffectState('noiseProliferate')
 const { effectDuration } = storeToRefs(useStrongEffectStore())
 const { start } = useTimeoutFn(endEffect, effectDuration, { immediate: false })
 
-watch(isActive, (val) => {
+watch(isProliferate, (val) => {
 	if (!val) return
 	start()
 })
 
-const noiseMin = computed<number>(() => (isActive.value ? 90 : 6))
-const noiseMax = computed<number>(() => (isActive.value ? 800 : 40))
+const noiseMin = computed<number>(() => (isProliferate.value ? 90 : 6))
+const noiseMax = computed<number>(() => (isProliferate.value ? 800 : 40))
 const noiseIndex = ref<number>(0)
 
 // ノイズ総数分の乱数を生成
@@ -45,7 +45,7 @@ useUpdateInterval({
 	delay,
 	countMax,
 	tick: () => {
-		noiseIndex.value = isTrigger(isActive.value ? 3 : 4)
+		noiseIndex.value = isTrigger(isProliferate.value ? 3 : 4)
 			? randomInt({ min: noiseMin.value, max: noiseMax.value })
 			: 0
 
@@ -61,24 +61,30 @@ useUpdateInterval({
 
 			translateX.value = setArray(
 				noiseIndex.value,
-				() => `${setPlusMinus()} ${randomInt({ min: 0, max: translateMax })}`,
+				() => `${setPlusMinus()} ${randomInt({ min: 0, max: translateMax })}`
 			)
 
 			translateY.value = setArray(
 				noiseIndex.value,
-				() => `${setPlusMinus()} ${randomInt({ min: 0, max: translateMax })}`,
+				() => `${setPlusMinus()} ${randomInt({ min: 0, max: translateMax })}`
 			)
 		}
-	},
+	}
 })
 
+// strongEffect（froze）
+const { isActive: isFroze } = useEffectState('froze')
+
 const setStyle = (i: number): CSSProperties => {
+	const bg = isFroze.value
+		? undefined
+		: colorsPattern[colorsIndex.value]?.[colorIndex.value[i] ?? 0]
+
 	return {
 		width: `${width.value[i]}px`,
 		height: `${height.value[i]}px`,
-		backgroundColor: colorsPattern[colorsIndex.value]?.[colorIndex.value[i] ?? 0] ?? '#f0f0f0',
-		opacity: `${opacity.value[i]}`,
-		translate: `calc(-50% ${translateX.value[i]}px) calc(-50% ${translateY.value[i]}px)`,
+		backgroundColor: bg ?? '#f0f0f0',
+		translate: `calc(-50% ${translateX.value[i]}px) calc(-50% ${translateY.value[i]}px)`
 	}
 }
 </script>

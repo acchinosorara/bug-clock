@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useGlitch } from '@/composables/glitch'
+import { useEffectState } from '@/composables/strongEffect/effectState'
 import type { CSSProperties } from 'vue'
+
+const { isActive: isFroze } = useEffectState('froze')
 
 const glitchIndex = 4
 const { glitchX, glitchY, glitchColor } = useGlitch(glitchIndex)
@@ -12,7 +15,7 @@ const setStyle = (i: number): CSSProperties => {
             ${setTranslate(glitchX.value[i])}
             ${setTranslate(glitchY.value[i])}
         `,
-		borderColor: glitchColor.value[i] || undefined,
+		borderColor: isFroze.value ? '#f0f0f0' : glitchColor.value[i] || undefined
 	}
 }
 </script>
