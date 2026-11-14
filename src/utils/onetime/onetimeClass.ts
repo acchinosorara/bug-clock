@@ -16,8 +16,8 @@ export const onetimeClass = (characters: string[], currentPattern: string | null
 				classStates.push({ [invertClassNames[index]!]: isTrigger(3) })
 				break
 			}
-			case pattern[3]:
-				classStates.push({ [pattern[3]!]: isEffectIndex.value[i] ?? false })
+			case pattern[5]:
+				classStates.push({ [pattern[5]!]: isEffectIndex.value[i] ?? false })
 				break
 		}
 	})
