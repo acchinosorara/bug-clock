@@ -2,6 +2,7 @@ export const onetimeError = (): string[] => {
 	const { randomInt } = random()
 
 	const errors = [
+		'テスト',
 		'エラーが発生しました',
 		'接続に失敗しました',
 		'日付に問題があります',
@@ -12,6 +13,8 @@ export const onetimeError = (): string[] => {
 	const i = randomInt({ min: 0, max: errors.length })
 	const characters = errors[i] ? [...errors[i]] : ['']
 	const garbled: Record<string, string[]> = {
+		'テ': ['〒'],
+		'ト': ['├', '|-'],
 		'エ': ['工', 'ヱ'],
 		'ー': ['─', '-', '～', '＿'],
 		'が': ['か”', 'か"'],
