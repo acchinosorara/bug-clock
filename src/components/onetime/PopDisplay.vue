@@ -2,10 +2,12 @@
 import { motion, AnimatePresence, easeOut } from 'motion-v'
 import CopyButton from './CopyButton.vue'
 import PopProgress from './PopProgress.vue'
+import Loading from './CharLoading.vue'
 import { useMakeOnetime } from '@/composables/makeOnetime'
 import type { ClassState } from '@/types/ClassState'
 import type { CSSProperties, ComponentPublicInstance } from 'vue'
 import type { VariantType, Transition } from 'motion-v'
+import { onetimeHole } from '@/utils/onetime/hole.ts'
 
 const { duration } = useAnimationValStore()
 const onetimePatternStore = useOnetimePatternStore()
@@ -62,8 +64,21 @@ watch(isPopover, async (val) => {
 				charStyleStates.value = multipleMargin() ?? []
 				break
 
-			// スラッシュ
+			// 改行
 			case pattern[3]:
+				const { breakCharacters, breakStyle } = onetimeBreak(characters.value)
+				newCharacters.value = breakCharacters
+				charStyleStates.value = breakStyle()
+				break
+
+			// 虫食い
+			case pattern[4]:
+				charStyleStates.value = onetimeHole(characters.value)
+				newCharacters.value = characters.value
+				break
+
+			// スラッシュ
+			case pattern[5]:
 				const {
 					slashRemoveCharacters,
 					isSlashIndex,
@@ -78,24 +93,24 @@ watch(isPopover, async (val) => {
 				transitionState.value = slashTransition()
 				break
 
-			// タグの誤表示
-			case pattern[4]:
-				newCharacters.value = onetimeTag(characters.value)
-				break
-
 			// カタカナ
-			case pattern[5]:
+			case pattern[6]:
 				newCharacters.value = onetimeKatakana(characters.value)
 				timeClassState.value = ''
 				break
 
 			// ローマ数字
-			case pattern[6]:
+			case pattern[7]:
 				newCharacters.value = onetimeRome(characters.value)
 				break
 
+			// ローディング
+			case pattern[8]:
+				newCharacters.value = []
+				break
+
 			// エラー
-			case pattern[7]:
+			case pattern[9]:
 				newCharacters.value = onetimeError()
 				timeClassState.value = ''
 				break
@@ -106,6 +121,14 @@ watch(isPopover, async (val) => {
 		}
 
 		charClassStates.value = onetimeClass(newCharacters.value, currentPattern.value)
+	}
+})
+
+// newCharacters以外を出力する場合
+const currentCharComponent = computed(() => {
+	switch (currentPattern.value) {
+		case pattern[8]:
+			return Loading
 	}
 })
 
@@ -145,6 +168,7 @@ onMounted(() => {
 				>
 					{{ char }}
 				</motion.span>
+				<component v-if="charSize" :is="currentCharComponent" />
 				<CopyButton />
 			</time>
 			<PopProgress />
